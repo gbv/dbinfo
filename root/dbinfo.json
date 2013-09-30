@@ -1,0 +1,34 @@
+﻿[% 
+    # TemplateToolkit template to create and serialize a JSON structure
+    USE JSON.Escape( pretty => 1 ); 
+    SET dbs = uri;
+
+    data = {
+        title => uri.dcterms_title.str,
+        uri   => uri.str
+    };
+    IF dbs.gbv_dbkey;   data.dbkey   = dbs.gbv_dbkey.str; END;
+    
+    IF NOT dbs.type('skos:Concept');
+        IF dbs.gbv_srubase; data.srubase = dbs.gbv_srubase.str; END;
+
+        IF dbs.gbv_picabase; 
+            data.access = dbs.gbv_picabase.str | replace('^http','psi'); 
+        END;
+
+        IF dbs.type('daiaserv:Openaccess');
+            data.openaccess = JSON_TRUE;
+        ELSE;
+            data.openaccess = JSON_FALSE;
+        END;
+
+        IF dbs.dcterms_extent; data.count = 1*dbs.dcterms_extent; END;
+    END;
+
+    IF dbs.foaf_isPrimaryTopicOf; 
+        data.infourl = dbs.foaf_isPrimaryTopicOf.str;
+    END;
+
+
+    data.json
+%]

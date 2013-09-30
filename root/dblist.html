@@ -1,0 +1,35 @@
+﻿<table class='tablesorter'>
+<thead>
+  <tr>
+   <th>Kürzel</th>
+   <th>Access</th>
+   <th>Name</th>
+  </tr>
+</thead>
+<tbody>
+[% base = request.base.remove('/$') %]
+[% FOREACH db = dblist %]
+<tr>
+  <td>
+    <a href="$base/[% db.gbv_dbkey %]">$db.gbv_dbkey</a>
+  </td>
+  <td>
+      [% IF db.type('daiaserv:Openaccess') -%]
+        <img src="$base/img/openaccess10x16.png" title="Frei zugänglich" /> open
+      [%- ELSE -%]
+        <img src="$base/img/closedaccess10x16.png" title="Zugangsbeschränkung möglich" />
+      [%- END %]
+  </td>
+  <td>
+    <a href="$db.foaf_homepage.href">[% db.dcterms_title %]</a>
+    [% org = db.rev('gbv:opac'); IF org; THEN %]
+      &#x20;
+      <a href="$org.href">
+        <img src="$base/img/home.png" title="zugehörige Einrichtung" border="0">
+      </a>
+    [% END %]
+  </td>
+</tr>
+[% END %]
+</tbody>
+</table>

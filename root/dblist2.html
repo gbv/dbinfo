@@ -1,0 +1,20 @@
+﻿<table class='tablesorter'>
+<thead>
+  <tr>
+   <th>Kürzel</th>
+   <th>Access</th>
+   <th>Name</th>
+  </tr>
+</thead>
+<tbody>
+[% FOREACH db = dblist %]
+<tr>
+  <td><a href="$base/[% db.gbv_dbkey %]">$db.gbv_dbkey</a></td>
+  <td>
+  </td>
+  <td>
+  </td>
+</tr>
+[% END %]
+</tbody>
+</table>

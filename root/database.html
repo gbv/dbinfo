@@ -1,0 +1,73 @@
+﻿[% INCLUDE header.html title=uri.dcterms_title %]
+   [% base = request.base.remove('/$') %]
+   [% SET dbs = uri %] 
+   [% IF dbs %]
+    [% IF dbs.dc_description %]
+      <p>[% dbs.dc_description('@de') %]</p>
+    [% END %]
+    <p>
+      <a href="$dbs.foaf_homepage.href">$dbs.foaf_homepage</a>
+      [% IF dbs.gbv_picabase %] (PICA-Datenbank)
+        <form action="[% dbs.gbv_picabase %]CMD" method="get" style="display:inline">
+          <input type="hidden" name="ACT" value="SRCHA">
+          <input type="hidden" name="IKT" value="1016">
+          <input type="text" name="TRM" size="40">
+          <input type="submit" value="Search">
+        </form>
+      [% END %]
+      [% IF dbs.type('daiaserv:Openaccess') -%]
+        <img src="$base/img/openaccess10x16.png" title="Frei zugänglich" />
+      [%- ELSE -%]
+        <img src="$base/img/closedaccess10x16.png" title="Zugangsbeschränkung möglich" />
+        <em>Zugangsbeschränkung möglich</em>
+      [%- END %]
+    </p>
+    [% IF dbs.foaf_isPrimaryTopicOf %]
+        <p><a href="$dbs.foaf_isPrimaryTopicOf.href">Weitere Informationen zur Datenbank</a></p>
+    [% END %]
+    [% org = dbs.rev('gbv:opac'); IF org %]
+      <p>
+        Geh&ouml;rt zu: <a href="$org.href">$org</a>
+        <img src="$base/img/home.png" title="zugehörige Einrichtung" border="0">
+      </p>
+    [% END %]
+    [% IF dbs.dc_subject %]
+       <p>Typ: <a href="$dbs.dc_subject">$dbs.dc_subject.skos_prefLabel</a> </p>
+    [% END %]
+    [% IF dbs.gbv_dbkey or dbs.gbv_srubase or dbs.gbv_webcat or dbs.gbv_solrbase or dbs.gbv_oaibase %]
+     <h2>Schnittstellen</h2>
+     <dl>
+      [% IF dbs.gbv_dbkey %]
+       <dt class="inline"><a href="http://unapi.gbv.de/about">unAPI</a>-key</dt>
+       <dd><code><a href="http://unapi.gbv.de/about">$dbs.gbv_dbkey</a></code></dd>
+      [% END %]
+      [% IF dbs.gbv_srubase %]
+       <dt class="inline"><abbr title="Search/Retrieval via URL">SRU</abbr></dt>
+       <dd><code><a href="$dbs.gbv_srubase">$dbs.gbv_srubase</a></code></dd>
+      [% END %]
+      [% IF dbs.gbv_solrbase %]
+       <dt class="inline">Solr</dt>
+       <dd><code><a href="$dbs.gbv_solrbase">$dbs.gbv_solrbase</a></code></dd>
+      [% END %]
+      [% IF dbs.gbv_oaibase %]
+       <dt class="inline">OAI-PMH</dt>
+       <dd><code><a href="$dbs.gbv_oaibase">$dbs.gbv_oaibase</a></code></dd>
+      [% END %]
+      [% IF dbs.gbv_webcat %]
+       <dt class="inline">Webcat</dt>
+       <dd><code><a href="$dbs.gbv_webcat">$dbs.gbv_webcat</a></code></dd>
+      [% END %]
+     </dl>
+    [% END %]
+   [% END %]
+   [% IF dbs.dcterms_extent %]
+    [% USE Number.Format %]
+    <h2>Inhalt</h2>
+    <p>Umfang: [% dbs.dcterms_extent | format_number %] Datensätze (kann ggf. abweichen)</p>
+    [% IF dbs.gbv_dbkey %]
+    <img src="http://uri.gbv.de/stats/database/img/[% dbs.gbv_dbkey %].png" title="Anzahl der Datensätze" />
+    [% END %]
+   [% END %]
+   </div>
+   <br style="clear:both;" />
+[% INCLUDE footer.html %]

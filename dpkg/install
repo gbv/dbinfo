@@ -1,0 +1,4 @@
+app.psgi srv/{$package_name}/app.psgi
+lib/*    srv/{$package_name}/lib
+local/*  srv/{$package_name}/local
+root/*   srv/{$package_name}/root

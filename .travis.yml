@@ -1,0 +1,21 @@
+language: perl
+perl:
+    - "5.19"
+    - "5.18"
+    - "5.16"
+    - "5.14"
+
+before_install:
+    - git config --global user.name "TravisCI"
+    - git config user.email 'travis@nowhere.dne'
+    - sudo apt-get install build-essential devscripts debhelper
+
+install:
+    - cpanm Carton
+    - carton install --deployment
+
+script: 
+    - ./test.sh
+    - ./dpkg-build.pl
+
+env: RELEASE_TESTING=1 AUTOMATED_TESTING=1 AUTHOR_TESTING=1

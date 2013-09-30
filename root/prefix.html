@@ -1,0 +1,8 @@
+﻿[% INCLUDE header.html title=uri.skos_prefLabel %]
+[% dblist = uri.revs('dc:subject') %]
+[% IF dblist %]
+[% INCLUDE dblist.html %]
+[% ELSE %]
+<p>Dies ist ein Datenbanktyp.</p>
+[% END %]
+[% INCLUDE footer.html %]

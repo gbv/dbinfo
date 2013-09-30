@@ -1,0 +1,30 @@
+#!/bin/sh
+
+set -e
+
+PACKAGE={$package_name}
+
+case "$1" in
+    purge)
+
+        # Remove the user
+        userdel $PACKAGE || true
+
+        # Remove logs
+        rm -rf /var/log/$PACKAGE
+        rm -rf /var/log/apache2/$PACKAGE
+
+        # Remove the home directory
+        rm -rf /srv/$PACKAGE
+    ;;
+
+    remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+    ;;
+     
+    *)
+        echo "postrm called with unknown argument: $1" >&2
+        exit 1
+    ;;
+esac
+
+exit 0

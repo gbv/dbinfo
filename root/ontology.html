@@ -1,0 +1,88 @@
+﻿[% INCLUDE header.html title="Datenbank-Ontologie" %]
+<p>
+  Zur Beschreibung von einzelnen Datenbanken in RDF wird folgendes RDF-Vokabular
+  verwendet. Zwingend notwendig sind nur die RDF-Properties 
+  <code>dcterms:title</code>, <code>dcterms:dbkey</code> und
+  <code>foaf:homepage</code>. Eine Datenbank im Sinne dieser Ontologie kann jede
+  beliebige Sammlung Objekten sein.
+</p>
+<!-- TODO: support vocabulary description with RDF::Lazy -->
+<table>
+<tr>
+ <td><a href="http://purl.org/dc/terms/title">dcterms:title</a></td>
+ <td>Name der Datenbank (ggf. mehrsprachige Namen mit language tags)</td>
+</tr>
+<tr>
+ <td><a href="http://purl.org/ontology/gbv/dbkey">gbv:dbkey</a></td>
+ <td>Datenbank-Kürzel. Aus dem dbkey ergibt sich die URI der Datenbank
+   <code>http://uri.gbv.de/database/{dbkey}</code>. Der dbkey hat die 
+   syntaktische Form <code>[a-z][a-z0-9]*(-[a-z0-9])*</code>.</td>
+</td>
+</tr>
+<tr>
+ <td><a href="http://xmlns.com/foaf/0.1/isPrimaryTopicOf">foaf:isPrimaryTopicOf</a></td>
+ <td>Informationsseite mit Beschreibung der Datenbank</td>
+</tr>
+<tr>
+ <td><a href="http://xmlns.com/foaf/0.1/homepage">foaf:homepage</a></td>
+ <td>Startseite der Datenbank. Entspricht bei PICA-Datenbanken der PICA-Basis-URL.</td>
+</tr>
+<tr>
+ <td><a href="http://purl.org/ontology/gbv/picabase">gbv:picabase</a></td>
+ <td>Basis-URL einer PICA-Datenbank (entspricht, falls vorhanden, der Startseite).</td>
+</tr>
+<tr>
+ <td><a href="http://purl.org/ontology/gbv/srubase">gbv:srubase</a></td>
+ <td>Basis-URL einer <a href="http://www.loc.gov/standards/sru/">SRU-Schnittstelle</a> der Datenbank</td>
+</tr>
+<tr>
+ <td><a href="http://purl.org/ontology/gbv/solrbase">gbv:solrbase</a></td>
+ <td>Basis-URL einer <a href="http://lucene.apache.org/solr/">Solr-Schnittstelle</a> der Datenbank</td>
+</tr>
+<tr>
+ <td><a href="http://purl.org/ontology/gbv/oaibase">gbv:oaibase</a></td>
+ <td>Basis-URL einer <a href="http://www.openarchives.org/pmh/">OAI-PMH-Schnittstelle</a> der Datenbank</td>
+</tr>
+<tr>
+ <td><a href="http://purl.org/dc/terms/license">dcterms:license</a></td>
+ <td>Lizenz unter der die Datenbank veröffentlicht ist. Falls keine Lizenz 
+     angegeben ist, sind alle Rechte vorbehalten.</td>
+</tr>
+<tr>
+ <td><a href="http://purl.org/dc/terms/extent">dcterms:extent</a></td>
+ <td>Umfang der Datenbank, d.h. im Allgemeinen die Anzahl der Datensätze</td>
+</tr>
+</table>
+<p>
+ Ist eine Datenbank der Haupt-Katalog einer Einrichtung, so verlinkt die Einrichtung
+ mit <a href="http://purl.gbv.de/ontology/gbv/opac">gbv:opac</a> zur Datenbank.
+</p>
+<p>
+ Jede Datenbank ist Instanz folgender Typen:
+</p>
+<table>
+<tr>
+ <td><a href="http://purl.org/cld/cdtype/CatalogueOrIndex">cdtype:CatalogueOrIndex</a></td>
+ <td>Ein Katalog oder Index im Sinne des 
+   <a href="http://dublincore.org/groups/collections/colldesc-type/">Dublin Core Collection Description Type (CDType) Vocabulary</a></td>
+</tr>
+<tr>
+ <td><a href="http://purl.org/ontology/daia/Service">daia:Service</a></td>
+ <td>Ein allgemeiner Service im Sinne der DAIA-Ontologie. Falls die Datenbank frei zugänglich ist
+   (Open Access), ist sie außerdem eine Instanz von 
+   <a href="http://purl.org/ontology/daia/service/Openaccess">daiaserv:Openaccess</a>.
+ </td>
+</tr>
+<tr>
+ <td><a href="http://rdfs.org/ns/void#">void:Dataset</a></td>
+ <td>Eine Datenbank im Sinne der <a href="http://vocab.deri.ie/void/guide">voID-Ontology</a></td>
+</tr>
+</table>
+<p>
+ Zur Gruppierung von Datenbanken kann das SKOS-Vokabular verwendet werden, wobei
+ eine Datenbank mit <code>dcterms:subject</code> einer Gruppe zugeordnet wird,
+ die eine Instanz von <a href="http://www.w3.org/2008/05/skos/core#Concept">skos:Concept</a>
+ ist.
+</p>
+[% INCLUDE footer.html %]
+
