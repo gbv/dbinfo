@@ -6,14 +6,13 @@ use HTTP::Request::Common;
 
 use GBV::App::URI::Database;
 
-my $app = GBV::App::URI::Database->new( htdocs => "htdocs" );
+my $app = GBV::App::URI::Database->new( htdocs => "root" );
 
 test_psgi $app, sub {
-        my $cb = shift;
-        my $res = $cb->(GET "/gvk");
-        use Data::Dumper;
-        is $res->code, '200', 'gvk found';
+    my $cb = shift;
+    my $res = $cb->(GET "/gvk");
+    is $res->code, '200', 'gvk found';
 #        like $res->content, qr/Pharmazie/m, 'Pharmazie';
-    };
+};
 
 done_testing;

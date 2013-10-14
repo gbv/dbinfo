@@ -20,6 +20,7 @@ use Scalar::Util qw(blessed);
 use CHI;
 our $CACHE = CHI->new( driver => 'Memory', global => 1, expires_in => '1 day' );
 
+use RDF::NS;
 use constant NS => RDF::NS->new('20130926');
 
 sub retrieve_rdf {
@@ -61,7 +62,7 @@ sub retrieve_rdf {
         return unless $key =~ /^[a-z][a-z0-9_-]+$/;
         log_info { "retrieve dbkey $key" };
 
-        $self->load_dblist; # ok
+        $self->load_dblist;
 
         my @triples;
         $self->db2rdf( $key, \@triples );
@@ -83,7 +84,7 @@ sub retrieve_rdf {
         add_statements($model, \@triples);
 
     } elsif ( $uri eq 'http://uri.gbv.de/database/' ) {
-        $model = $self->retrieve_all;
+        $model = $self->retrieve_base;
     }
 
     log_info {"retrieved: $model"};
@@ -91,15 +92,12 @@ sub retrieve_rdf {
     return $model;
 }
 
-sub retrieve_all { # with prefixlist
+sub retrieve_base {
     my $self = shift;
 
     $self->load_dblist;
 
     my @triples;
-    foreach my $key (keys %{ $self->{dblist} }) {
-        my $rdf = $self->db2rdf( $key, \@triples );
-    }
 
     my $scheme = iri('http://uri.gbv.de/database/');
     push @triples, [ $scheme, NS->uri('rdf:type'), NS->uri('skos:ConceptScheme') ];
@@ -108,6 +106,16 @@ sub retrieve_all { # with prefixlist
             my $uri = iri("http://uri.gbv.de/database/$prefix");
             push @triples, [ $scheme, NS->uri('skos:hasTopConcept'), $uri ];
         }
+    }
+
+    # databases without prefix
+    foreach my $key (keys %{ $self->{dblist} }) {
+        next if $key =~ /-/;
+        my $db = $self->{dblist}->{$key};
+    
+        my $dburi = $self->db2uri($key);
+        push @triples, [ $dburi, NS->uri('dc:subject'), $scheme ];
+        $self->db2rdf( $key, \@triples );
     }
 
     my $model = RDF::Trine::Model->new;

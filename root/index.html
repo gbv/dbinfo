@@ -1,27 +1,38 @@
 ﻿[% INCLUDE header.html title="Datenbanken" %]
+
 <p>
 Diese Seite enthält maschinenlesbare Informationen zu Katalogen und anderen 
-Datenbanken, die im GBV verwendet werden. Die Datenbank-Übersicht befindet 
-sich in einem frühen Beta-Statum. Die einzelnen Datenbanken werden mit
-<a href="ontology.html">folgendem RDF-Vokabular</a> beschrieben.
+Datenbanken, die im GBV verwendet werden. Die einzelnen Datenbanken sind jeweils
+über eine URI der Form <code>http://uri.gbv.de/database/{dbkey}</code> identifiziert
+wobei <code>{dbkey}</code> das Datenbankkürzel ist.
 </p>
-<!--p>
-Um Informationen zu einer Datenbank zu bekommen, wählen sie eine URL
-der Form <code>http://uri.gbv.de/database/{key}</code> wobei <code>{key}</code>
-ein Datenbankkürzel ist. Eine Liste von PICA-Datenbanken gibt es unter 
-<a href="http://unapi.gbv.de/about">http://unapi.gbv.de/about</a>.
-</p-->
+
+<p>
+Primäre Bibliothekskataloge sind unter 
+<a href="http://uri.gbv.de/database/opac">http://uri.gbv.de/database/opac</a>
+zusammengefasst.
+</p>
+
 [% types = uri.skos_hasTopConcept_ %]
 [% IF types %]
-<h2>Allgemeine Arten von Datenbanken</h2>
-<ul>
-[% FOREACH typ = types %]
-  <li><a href="$typ">$typ.skos_prefLabel</a></li>
+  <h2>Datenbankgruppen</h2>
+  <dl>
+  [% FOREACH typ = types.sort %]
+    <dt><a href="$typ">[% typ %]</a></dt>
+    <dd>$typ.skos_prefLabel</dd>
+  [% END %]
+  </dl>
 [% END %]
-</ul>
+
+[% dblist = uri.revs('dc:subject') %]
+[% IF dblist.size %]
+  <h2>Sonstige Datenbanken</h2>
+  [% INCLUDE dblist.html %]
 [% END %]
-[% dblist = uri.graph.subjects('rdf:type','cdtype:CatalogueOrIndex') %]
-[% IF dblist %]
-<h2>Liste aller Datenbanken</h2>
-[% INCLUDE dblist.html ; END %]
+
+<p>
+  Die einzelnen Datenbanken werden mit
+  <a href="ontology.html">folgendem RDF-Vokabular</a> beschrieben.
+</p>
+
 [% INCLUDE footer.html %]

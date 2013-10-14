@@ -24,7 +24,7 @@ requires 'Plack::Middleware::Rewrite';
 requires 'Plack::Middleware::TemplateToolkit','0.21';
 requires 'RDF::Dumper';
 
-requires 'RDF::Lazy', '>= 0.061';
+requires 'RDF::Lazy', '>= 0.081';
 
 requires 'RDF::Trine';
 
