@@ -2,14 +2,14 @@
 about:
     author          : Jakob Voss <voss@gbv.de>
     architecture    : any
-    version         : "`git tag | grep '^[0-9]\\+\\.[0-9]\\+$' | head -1`"
+    version         : "`git tag | sort -r | awk '/^v[0-9]+\.[0-9]+$/ {print substr($1,2)}' | head -1`"
     changes         : "`git log -n1 --pretty=format:\"  * %s\"`"
     timestamp       : "`git log -n1 --format=\"%ad\" --date=rfc`"
 
 package:
     name            : dbinfo 
     description     : 
-    depends         : debhelper (= 7.0.50~)
+    depends         : debhelper (>= 7.0.50~)
     binary_depends  :
     section         : gbv
     priority        : extra
