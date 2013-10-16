@@ -47,7 +47,20 @@ Debian-Paket erstellt.
 
 ## Installation und Updates
 
-...
+Ein fertiges Debian-Paket kann direkt installiert werden:
+
+    sudo dpkg install dbinfo_0.01_i386.deb
+
+Zu beachten ist, dass das Paket für die selbe Rechner-Architektur (z.B. i386)
+und Betriebssystem-Version (z.B. Ubuntu) gebaut sein sollte.
+
+Die Installationsskripte legen einen Nutzer `dbinfo` sowie das Verzeichnis
+`/srv/dbinfo` mit der Webanwendung und allen benötigten Libraries und das
+Verzeichnis `/var/log/dbinfo` für Logdateien an.
+
+## Verwendung aus dem Git-Repository
+
+Siehe ...
 
 ## Lokaler Aufruf
 

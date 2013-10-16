@@ -7,15 +7,17 @@ PACKAGE={$package_name}
 case "$1" in
     purge)
 
-        # Remove the user
+        # Remove init script links
+        update-rc.d $PACKAGE remove
+
+        # Remove user
         userdel $PACKAGE || true
 
-        # Remove logs
-        rm -rf /var/log/$PACKAGE
-        rm -rf /var/log/apache2/$PACKAGE
-
-        # Remove the home directory
+        # Remove home directory
         rm -rf /srv/$PACKAGE
+
+        # Remove log directory
+        rm -rf /var/log/$PACKAGE
     ;;
 
     remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)

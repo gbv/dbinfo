@@ -28,8 +28,8 @@ requires 'RDF::Lazy', '>= 0.081';
 
 requires 'RDF::Trine';
 
-#requires 'Template::Plugin::JSON::Escape;
-#requires 'Template::Plugin::Number::Format;
+requires 'Template::Plugin::JSON::Escape';
+requires 'Template::Plugin::Number::Format';
 
 requires 'Try::Tiny';
 requires 'URI::Escape';

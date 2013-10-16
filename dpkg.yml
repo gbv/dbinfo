@@ -8,7 +8,7 @@ about:
 
 package:
     name            : dbinfo 
-    description     : 
+    description     : "Webanwendung des GBV Datenbankverzeichnis unter http://uri.gbv.de/database"
     depends         : debhelper (>= 7.0.50~)
     binary_depends  :
     section         : gbv
@@ -20,7 +20,10 @@ before_build:
 
 source:
     - app.psgi 
+    - cpanfile
+    - cpanfile.snapshot
     - run.sh
     - lib
     - local
+    - root
 

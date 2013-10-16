@@ -2505,6 +2505,15 @@ DISTRIBUTIONS
       IO::Socket 0
       POSIX 0
       Socket 0
+  Number-Format-1.73
+    pathname: W/WR/WRW/Number-Format-1.73.tar.gz
+    provides:
+      Number::Format 1.73
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 0
+      POSIX 0
+      Test::More 0
   PPI-1.215
     pathname: A/AD/ADAMK/PPI-1.215.tar.gz
     provides:
@@ -3358,6 +3367,23 @@ DISTRIBUTIONS
       Scalar::Util 1.14
       Test::More 0.42
       perl 5.005
+  Template-Plugin-JSON-Escape-0.02
+    pathname: N/NA/NANTO/Template-Plugin-JSON-Escape-0.02.tar.gz
+    provides:
+      Template::Plugin::JSON::Escape 0.02
+    requirements:
+      ExtUtils::MakeMaker 0
+      JSON 2.12
+      Template 2.20
+      Test::More 0
+  Template-Plugin-Number-Format-1.02
+    pathname: D/DA/DARREN/Template-Plugin-Number-Format-1.02.tar.gz
+    provides:
+      Template::Plugin::Number::Format 1.02
+    requirements:
+      ExtUtils::MakeMaker 0
+      Number::Format 0
+      Template 2.07
   Template-Toolkit-2.25
     pathname: A/AB/ABW/Template-Toolkit-2.25.tar.gz
     provides:

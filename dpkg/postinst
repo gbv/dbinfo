@@ -1,8 +1,8 @@
 #!/bin/sh
 
-PACKAGE={$package_name}
-
 set -e
+
+PACKAGE={$package_name}
 
 case "$1" in
     configure)
@@ -17,11 +17,15 @@ case "$1" in
         # Make sure this user owns the directory
         chown -R $PACKAGE:adm /srv/$PACKAGE
 
-        # Make the log directory
+        # Create log directory
         if [ ! -e /var/log/$PACKAGE ]; then
             mkdir /var/log/$PACKAGE
             chown -R $PACKAGE:adm /var/log/$PACKAGE
         fi
+
+        # Create init script links
+        update-rc.d $PACKAGE defaults >/dev/null || exit $?
+
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
