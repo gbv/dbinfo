@@ -5,6 +5,7 @@ requires 'Starman', '>= 0.4008';
 
 requires 'Plack::Middleware::Debug';
 requires 'Plack::Middleware::TemplateToolkit';
+requires 'Plack::Middleware::Log::Contextual';
 
 requires 'RDF::NS', '20130926';
 

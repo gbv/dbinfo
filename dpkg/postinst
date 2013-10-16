@@ -24,7 +24,7 @@ case "$1" in
         fi
 
         # Create init script links
-        update-rc.d $PACKAGE defaults >/dev/null || exit $?
+        update-rc.d $PACKAGE defaults 95 >/dev/null || exit $?
 
     ;;
 
