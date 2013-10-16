@@ -41,36 +41,46 @@ Die verwendeten RDF-Ontologien sind unter
 
 # Administration
 
-Der Quellcode der Webanwendung liegt in einem git-Repository unter
-<https://github.com/gbv/dbinfo>. Zur Installation wird daraus ein
-Debian-Paket erstellt.
+Der Quellcode der Webanwendung liegt in einem nicht-öffentlichen git-Repository
+unter <https://github.com/gbv/dbinfo>. Zur Installation wird daraus ein
+Debian-Paket erstellt (interne Details siehe unter
+[Software-Entwicklung](#software-entwicklung)).
 
 ## Installation und Updates
 
 Ein fertiges Debian-Paket kann direkt installiert werden:
 
-    sudo dpkg install dbinfo_0.01_i386.deb
+    sudo dpkg --install dbinfo_0.01_i386.deb
 
 Zu beachten ist, dass das Paket für die selbe Rechner-Architektur (z.B. i386)
 und Betriebssystem-Version (z.B. Ubuntu) gebaut sein sollte.
 
-Die Installationsskripte legen einen Nutzer `dbinfo` sowie das Verzeichnis
-`/srv/dbinfo` mit der Webanwendung und allen benötigten Libraries und das
-Verzeichnis `/var/log/dbinfo` für Logdateien an.
+Anschließend lässt sich die Webanwendung starten und stoppen:
 
-## Verwendung aus dem Git-Repository
+    sudo service start dbinfo
+    sudo service stop dbinfo
+    sudo service status dbinfo
 
-Siehe ...
+Wenn die Webanwendung läuft liefert das `status`-Kommando die prozess-ID und
+auf welchem Port sie per HTTP erreichbar ist. Zum Beispiel sagt
 
-## Lokaler Aufruf
+    dbinfo is running (pid 5579 listening on *:6006)
 
-Das Skript `run.sh` startet die Anwendung mit dem Starman-Webserver. Zum Testen
-kann über den Parameter `-d` stattdessen Plackup ausgewählt werden.
+dass die Anwendung als Prozess 5579 läuft und von allen Adressen (`*`) auf Port
+6006 aufgerufen werden kann.
+
+Mit `dpkg -s` bzw. `dpkg -L` kann überprüft werden ob und mit welchen Dateien
+das Paket installiert ist. Die Installationsskripte legen einen Nutzer `dbinfo`
+sowie das Verzeichnis `/srv/dbinfo` mit der Webanwendung und allen benötigten
+Libraries und das Verzeichnis `/var/log/dbinfo` für Logdateien an. Zum
+vollständigen entfernen der Anwendung:
+
+    sudo dpkg --purge dbinfo
+
 
 # Software-Entwicklung
 
 ## Übersicht
-
 
 Die Anwendung ist in Perl geschrieben. Benötigte CPAN-Module sind in der Datei
 `cpanfiles` aufgeführt und werden mittels [carton] im Unterverzeichnis `local`
@@ -93,6 +103,11 @@ Die benötigten Programme lassen sich unter Ubuntu folgendermaßen installieren:
     sudo apt-get install build-essential devscripts debhelper git-core perl
     wget -O - http://cpanmin.us | sudo perl - --self-upgrade
     sudo cpanm Carton
+
+## Lokaler Aufruf
+
+Das Skript `run.sh` startet die Anwendung mit dem Starman-Webserver. Zum Testen
+kann über den Parameter `-d` stattdessen Plackup ausgewählt werden.
 
 ## Unit-Tests
 
@@ -126,3 +141,4 @@ Das Debian-Paket wird mit dem Skript `build-debian.pl` erstellt und befindet sic
 anschließend im Verzeichnis `debuild`, von wo es mit `dpkg --install`
 installiert werden kann.
 
+Zum erstellen des Paketes muss das git-repository tags enthalten!

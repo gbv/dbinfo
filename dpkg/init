@@ -103,11 +103,10 @@ status() \{
     if [ -f $PIDFILE ]; then
         PID=`cat $PIDFILE`
         if check_running; then
-            LSPORT="lsof -a -p$PID -i4 -i6 -P | grep LISTEN | awk '{print $9}' 2>/dev/null"
-            echo "$PID is running (pid $PID on $LSPORT)"
+            LSPORT=`lsof -a -p$PID -i4 -i6 -P | grep LISTEN | awk '\{print $9\}' 2>/dev/null`
+            echo "$NAME is running (pid $PID listening on $LSPORT)"
         else
-            echo "$PID is not running but $PIDFILE exists"
-        else
+            echo "$NAME is not running but $PIDFILE exists"
         fi
     else
         echo "$NAME is not running"
