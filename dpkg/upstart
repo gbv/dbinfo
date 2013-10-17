@@ -1,0 +1,25 @@
+# upstart {$package_name} script (requires upstart >=1.4)
+
+description "{$package_description}"
+version "{$version}"
+author "{$author}"
+
+start on runlevel [2345]
+stop on runlevel [016]
+
+setuid {$package_name}
+
+script
+    NAME={$package_name}
+    HOST=*
+    PORT=6006
+    WORKERS=5
+
+    # DOES NOT --daemonize to not confuse upstart
+    # TODO: test --preload-app and SIGHUP
+
+    chdir /srv/$NAME
+    echo "Starting $NAME at `date +%Y-%m-%d\ %T\ %Z`:"
+    set -x
+    exec carton exec -- starman -Ilib --preload-app --workers $WORKERS -listen $HOST:$PORT --access-log /var/log/$NAME/access.log
+end script
