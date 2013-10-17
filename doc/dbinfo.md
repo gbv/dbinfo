@@ -46,6 +46,9 @@ unter <https://github.com/gbv/dbinfo>. Zur Installation wird daraus ein
 Debian-Paket erstellt (interne Details siehe unter
 [Software-Entwicklung](#software-entwicklung)).
 
+Die Webanwendung läuft standardmäßig auf Port 6006 und muss über einen
+Reverse-Proxy für <http://uri.gbv.de/database/> bereitgestellt werden.
+
 ## Installation und Updates
 
 Ein fertiges Debian-Paket kann direkt installiert werden:
@@ -145,10 +148,12 @@ Parameter `-l`, bspw.:
 
 Das Debian-Paket wird mit dem Skript `build-debian.pl` durch Aufruf von `make
 debian` erstellt und befindet sich anschließend im Verzeichnis `debuild`, von
-wo es mit `dpkg --install` installiert werden kann. Die Versionsnummer wird
-aus dem jeweils letzten Git-Tag der Form `v0.00` übernommen - es ist deshalb
-notwendig beim Klonen des Repositories die Tags ebenfalls zu übernehmen.
+wo es mit `dpkg --install` installiert werden kann. Die Versionsnummer wird aus
+dem jeweils letzten Git-Tag der Form `v0.00` übernommen - es ist deshalb
+notwendig beim Updaten eines Repository-Klons die Tags ebenfalls zu übernehmen.
 
+    git pull origin master --tags
+    make debian
 
 [carton]: https://metacpan.org/module/Carton
 [upstart]: http://upstart.ubuntu.com/

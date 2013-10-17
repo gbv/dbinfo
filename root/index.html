@@ -18,7 +18,7 @@ zusammengefasst.
   <h2>Datenbankgruppen</h2>
   <dl>
   [% FOREACH typ = types.sort %]
-    <dt><a href="$base/$typ.split('/').last">[% typ %]</a></dt>
+    <dt><a href="$base/[% typ.uri.split('/').last %]">[% typ %]</a></dt>
     <dd>$typ.skos_prefLabel</dd>
   [% END %]
   </dl>
