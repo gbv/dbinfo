@@ -9,7 +9,7 @@ wobei <code>{dbkey}</code> das Datenbankkürzel ist.
 
 <p>
 Primäre Bibliothekskataloge sind unter 
-<a href="http://uri.gbv.de/database/opac">http://uri.gbv.de/database/opac</a>
+<a href="$base/opac">http://uri.gbv.de/database/opac</a>
 zusammengefasst.
 </p>
 
@@ -18,7 +18,7 @@ zusammengefasst.
   <h2>Datenbankgruppen</h2>
   <dl>
   [% FOREACH typ = types.sort %]
-    <dt><a href="$typ">[% typ %]</a></dt>
+    <dt><a href="$base/$typ.split('/').last">[% typ %]</a></dt>
     <dd>$typ.skos_prefLabel</dd>
   [% END %]
   </dl>

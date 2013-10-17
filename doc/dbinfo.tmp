@@ -1,3 +1,7 @@
+% GBV Datenbankverzeichnis
+% Jakob Voß, Verbundzentrale des GBV
+% 2013-10-14 (version 0.00rev2)
+
 Das Datenbankverzeichnis unter <http://uri.gbv.de/database/> (kurz **dbinfo**)
 fürt Informationen über Kataloge und andere Datenbanken die für den GBV
 relevant sind zusammen und stellt diese Informationen als Linked Open Data zur
@@ -41,58 +45,29 @@ Die verwendeten RDF-Ontologien sind unter
 
 # Administration
 
-Der Quellcode der Webanwendung liegt in einem nicht-öffentlichen git-Repository
-unter <https://github.com/gbv/dbinfo>. Zur Installation wird daraus ein
-Debian-Paket erstellt (interne Details siehe unter
-[Software-Entwicklung](#software-entwicklung)).
+Der Quellcode der Webanwendung liegt in einem git-Repository unter
+<https://github.com/gbv/dbinfo>. Zur Installation wird daraus ein
+Debian-Paket erstellt.
 
 ## Installation und Updates
 
-Ein fertiges Debian-Paket kann direkt installiert werden:
+...
 
-    sudo dpkg --install dbinfo_0.01_i386.deb
+## Lokaler Aufruf
 
-Zu beachten ist, dass das Paket für die selbe Rechner-Architektur (z.B. i386)
-und Betriebssystem-Version (z.B. Ubuntu) gebaut sein sollte.
-
-Mit `dpkg -s` bzw. `dpkg -L` kann überprüft werden ob und mit welchen Dateien
-das Paket installiert ist. Die Installationsskripte legen einen Nutzer `dbinfo`
-sowie das Verzeichnis `/srv/dbinfo` mit der Webanwendung und allen benötigten
-Libraries und das Verzeichnis `/var/log/dbinfo` für Logdateien an. Zum
-vollständigen entfernen der Anwendung:
-
-    sudo dpkg --purge dbinfo
-
-## Starten und Überprüfen
-
-Zum Starten wird [upstart] verwendet, so dass sich die Webanwendung
-folgendermaßen starten und stoppen lässt:
-
-    sudo start dbinfo
-    sudo stop dbinfo
-
-Zusätzlich werden folgende Aufrufe unterstützt, um zu überprüfen ob die
-Webanwendung läuft, um ihre Konfiguration neu zu laden bzw. um sie neu zu
-starten:
-
-    status dbinfo
-    sudo restart dbinfo   # erzeugt neuen Prozess
-    sudo reload dbinfo    # behält Prozess bei
-
-## Logdateien
-
-Beim Start der Anwendung erfolgt durch upstart ein Eintrag in der Logdatei
-`/var/log/upstart/dbinfo.log`. Zugriffe werden unter
-`/var/log/dbinfo/access.log` geloggt.
+Das Skript `run.sh` startet die Anwendung mit dem Starman-Webserver. Zum Testen
+kann über den Parameter `-d` stattdessen Plackup ausgewählt werden.
 
 # Software-Entwicklung
 
 ## Übersicht
 
+
 Die Anwendung ist in Perl geschrieben. Benötigte CPAN-Module sind in der Datei
 `cpanfiles` aufgeführt und werden mittels [carton] im Unterverzeichnis `local`
-installiert. Die genauen Versionen der verwendeten CPAN-Module sind in der
-Datei `cpanfiles.snapshot` festgelegt.
+installiert.
+
+[carton]: https://metacpan.org/module/Carton
 
 ## Voraussetzungen
 
@@ -109,11 +84,6 @@ Die benötigten Programme lassen sich unter Ubuntu folgendermaßen installieren:
     sudo apt-get install build-essential devscripts debhelper git-core perl
     wget -O - http://cpanmin.us | sudo perl - --self-upgrade
     sudo cpanm Carton
-
-## Lokaler Aufruf
-
-Das Skript `run.sh` startet die Anwendung mit dem Starman-Webserver. Zum Testen
-kann über den Parameter `-d` stattdessen Plackup ausgewählt werden.
 
 ## Unit-Tests
 
@@ -134,23 +104,16 @@ lassen.
 
 ## Debugging
 
-Zum Logging wird [Log::Contextual] auf verschiedenen Ebenen verwendet. Die
-Umgebungsvariable `GBV_APP_COVERS_UPTO` setzt die Ebene, ab der Nachrichten als
-Warnungen ausgegeben werden. Das run-Skript setzt diese Variable über den
-Parameter `-l`, bspw.:
+Zum Logging wird [Log::Contextual](https://metacpan.org/module/Log::Contextual) 
+auf verschiedenen Ebenen verwendet. Die Umgebungsvariable `GBV_APP_COVERS_UPTO`
+setzt die Ebene, ab der Nachrichten als Warnungen ausgegeben werden. Das
+run-Skript setzt diese Variable über den Parameter `-l`, bspw.:
 
     ./run.sh -d -l trace
 
 ## Debian-Paket
 
-Das Debian-Paket wird mit dem Skript `build-debian.pl` durch Aufruf von `make
-debian` erstellt und befindet sich anschließend im Verzeichnis `debuild`, von
-wo es mit `dpkg --install` installiert werden kann. Die Versionsnummer wird
-aus dem jeweils letzten Git-Tag der Form `v0.00` übernommen - es ist deshalb
-notwendig beim Klonen des Repositories die Tags ebenfalls zu übernehmen.
-
-
-[carton]: https://metacpan.org/module/Carton
-[upstart]: http://upstart.ubuntu.com/
-[Log::Contextual]: https://metacpan.org/module/Log::Contextual 
+Das Debian-Paket wird mit dem Skript `build-debian.pl` erstellt und befindet sich
+anschließend im Verzeichnis `debuild`, von wo es mit `dpkg --install`
+installiert werden kann.
 

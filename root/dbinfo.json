@@ -29,6 +29,5 @@
         data.infourl = dbs.foaf_isPrimaryTopicOf.str;
     END;
 
-
     data.json
 %]

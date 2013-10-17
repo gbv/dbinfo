@@ -112,7 +112,7 @@ sub prepare_app {
             RELATIVE     => 1,
             INTERPOLATE  => 1, 
             pass_through => 0,
-            request_vars => [qw(base)],
+            vars => { base => '.' }, # request.base.remove('/$')
             404 => '404.html', 
             500 => '500.html'
         );
