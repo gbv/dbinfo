@@ -63,10 +63,10 @@
     [% USE Number.Format %]
     <h2>Inhalt</h2>
     <p>Umfang: [% dbs.dcterms_extent | format_number %] Datensätze (kann ggf. abweichen)</p>
+   [% END %]
     [% IF dbs.gbv_dbkey %]
     <img src="http://uri.gbv.de/stats/database/img/[% dbs.gbv_dbkey %].png" title="Anzahl der Datensätze" />
     [% END %]
-   [% END %]
    </div>
    <br style="clear:both;" />
 [% INCLUDE footer.html %]
