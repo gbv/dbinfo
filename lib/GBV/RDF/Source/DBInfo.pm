@@ -195,6 +195,7 @@ sub db2rdf {
     log_debug { "database found for $key $host, $title" };
 
     if ( $host && $dbsid ) {
+        $host =~ s/gsoapi/gso/; # HACK
         my $url = "http://$host/DB=$dbsid/";
         
         my $srubase = "http://sru.gbv.de/$key";
