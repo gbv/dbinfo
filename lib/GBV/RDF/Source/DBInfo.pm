@@ -292,21 +292,21 @@ sub load_dblist {
     my $self = shift;
 
     my $dbs = try {
-        my $json = get('http://k1www.gbv.de/unapi/databases');
+        my $json = get('http://gsoapiwww.gbv.de/unapi/databases');
         $json = JSON->new->utf8->decode($json);
         log_debug { "retrieved GBV list of databases" };
         $json;
     };
 
     if ($dbs) {
-        $self->{dblist} = { map { $_->{key} => $_ } @$dbs };
+        $self->{dblist} = $dbs;
     } else {
         log_error { "failed to get GBV list of databases" };
         $self->{dblist} = { }
     }
 
     $self->{prefixes} = try {
-        my $json = get('http://k1www.gbv.de/unapi/prefixes.php');
+        my $json = get('http://gsoapiwww.gbv.de/unapi/prefixes');
         $json = JSON->new->utf8->decode($json);
         log_debug { "retrieved GBV list of database prefixes" };
         $json;
