@@ -59,11 +59,10 @@ sub prepare_app {
     my $gbv_dbinfo = GBV::RDF::Source::DBInfo->new;
 
     my $enrich = rdflow( from => $self->htdocs, name => 'Additional RDF files' );
-    $gbv_dbinfo = union( $gbv_dbinfo, $enrich );
 
     $self->source( 
         RDF::Flow::Cached->new(
-            $gbv_dbinfo,
+            union( $gbv_dbinfo, $enrich ),
             CHI->new( driver => 'Memory', global => 1, expires_in => '1 hour' )
         )
     );
@@ -82,40 +81,52 @@ sub prepare_app {
                 );
 
         enable 'JSONP';
-        enable 'RDF::Flow',
-            base         => $self->base,
-            empty_base   => 1,
-            rewrite      => $self->rewrite_uri,
-            source       => $self->source,
-            namespaces   => NS,
-            formats      => {
-                nt   => 'ntriples', 
-                rdf  => 'rdfxml', 
-                xml  => 'rdfxml',
-                ttl  => 'turtle',
-                json => 'rdfjson',
-            },
-            pass_through => 1;
 
-        # core driver
-        enable sub { 
-            my $app = shift;
-            sub { 
-                my $env = shift;
-                $self->core($app, $env);
-                $app->($env);
-            }
+        mount '/suggest-dbkey' => sub {
+            my $id = Plack::Request->new($_[0])->param('id') // '';
+            my $result = $gbv_dbinfo->suggest_dbkey( $id );
+            my $json = JSON->new->encode( $result );
+            return [ 200, [ "Content-Type" => "text/javascript" ], [ $json ] ];
         };
-    
-        Plack::Middleware::TemplateToolkit->new( 
-            INCLUDE_PATH => $self->htdocs,
-            RELATIVE     => 1,
-            INTERPOLATE  => 1, 
-            pass_through => 0,
-            vars => { base => '.' }, # request.base.remove('/$')
-            404 => '404.html', 
-            500 => '500.html'
-        );
+
+        mount '/' => builder {
+
+            enable 'RDF::Flow',
+                base         => $self->base,
+                empty_base   => 1,
+                rewrite      => $self->rewrite_uri,
+                source       => $self->source,
+                namespaces   => NS,
+                formats      => {
+                    nt   => 'ntriples', 
+                    rdf  => 'rdfxml', 
+                    xml  => 'rdfxml',
+                    ttl  => 'turtle',
+                    json => 'rdfjson',
+                },
+                pass_through => 1;
+
+            # core driver
+            enable sub { 
+                my $app = shift;
+                sub { 
+                    my $env = shift;
+                    $self->core($app, $env);
+                    $app->($env);
+                }
+            };
+        
+            Plack::Middleware::TemplateToolkit->new( 
+                INCLUDE_PATH => $self->htdocs,
+                RELATIVE     => 1,
+                INTERPOLATE  => 1, 
+                pass_through => 0,
+                vars => { base => '.' }, # request.base.remove('/$')
+                404 => '404.html', 
+                500 => '500.html'
+            );
+
+        };
     };
 }
 

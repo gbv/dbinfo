@@ -12,7 +12,9 @@ use Try::Tiny;
 use RDF::Trine::Model;
 use RDF::Trine qw(iri statement literal blank);
 
-use LWP::Simple qw(get);
+use LWP::Simple qw(mirror is_success RC_NOT_MODIFIED);
+use File::Temp qw(tempfile tempdir);
+
 use JSON;
 use Digest::MD5 qw(md5_hex);
 use Scalar::Util qw(blessed);
@@ -43,7 +45,7 @@ sub retrieve_rdf {
         try {
             my $key = 'opac-'.lc($isil);
 
-            $self->load_databases;
+            $self->load;
 
             my @triples;
             $self->db2rdf( $key, \@triples );
@@ -65,7 +67,7 @@ sub retrieve_rdf {
         return unless $key =~ /^[a-z][a-z0-9_-]+$/;
         log_info { "retrieve dbkey $key" };
 
-        $self->load_databases;
+        $self->load;
 
         my @triples;
         $self->db2rdf( $key, \@triples );
@@ -98,7 +100,7 @@ sub retrieve_rdf {
 sub retrieve_base {
     my $self = shift;
 
-    $self->load_databases;
+    $self->load;
 
     my @triples;
 
@@ -291,19 +293,67 @@ sub isil2db {
     return $self->{databases}->{$key};
 }
 
-sub load_databases {
+sub load {
     my $self = shift;
-    foreach (qw(databases prefixes)) {
-        $self->{$_} = try {
-            my $json = get("$UNAPI/$_");
-            $json = JSON->new->utf8->decode($json);
-            log_debug { "retrieved GBV list of $_" };
-            $json;
-        } catch {
-            log_error { "failed to get GBV list of $_" };
-            { };
-        };
+    foreach my $name (qw(databases prefixes)) {
+        $self->load_part($name);
     }
+}
+
+sub load_part {
+    my ($self, $name) = @_;
+
+    $self->{tempdir} ||= tempdir();
+
+    my ($url, $file) = ("$UNAPI/$name", $self->{tempdir}.$name);
+        
+    my $mirror = mirror($url, $file);
+
+    if ($mirror == RC_NOT_MODIFIED and $self->{$name}) {
+        return;
+    } elsif (is_success($mirror)) {
+        if (open(my $fh, "<:encoding(UTF-8)", $file)) {
+            my $json = try {
+                local $/;
+                JSON->new->decode(<$fh>);
+            };
+            if ($json) {
+                log_debug { "retrieved GBV list of $name" };
+                $self->{$name} = $json;
+                return;
+            }
+        }
+    }
+
+    log_error { "failed to get GBV list of $name" };
+    $self->{$name} ||= { };
+}
+
+sub suggest_dbkey {
+    my ($self, $search) = @_;
+
+    $self->load;
+    my ($completion, $description, $uris) = ([],[],[]);
+
+    my @dbkeys;
+    my $i=0;
+    foreach my $key (sort keys $self->{databases}) {
+        if ($key ge $search) {
+            push @dbkeys, $key;
+            last if $i++ > 10;            
+        }
+    }
+
+    foreach my $dbkey (@dbkeys) {
+        my $db = $self->{databases}->{$dbkey};
+        next if !$db;
+
+        push @$completion, $dbkey;
+        push @$description, $db->{title};
+        push @$uris, "http://uri.gbv.de/database/$dbkey";
+    }
+
+    return [ $search, $completion, $description, $uris ];
 }
 
 1;
