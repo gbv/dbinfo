@@ -20,6 +20,8 @@ use Scalar::Util qw(blessed);
 use CHI;
 our $CACHE = CHI->new( driver => 'Memory', global => 1, expires_in => '1 day' );
 
+our $UNAPI = "http://gsoapiwww.gbv.de/unapi";
+
 use RDF::NS;
 use constant NS => RDF::NS->new('20130926');
 
@@ -40,7 +42,8 @@ sub retrieve_rdf {
         log_info { "retrieve ISIL $isil" };
         try {
             my $key = 'opac-'.lc($isil);
-            $self->load_dblist;
+
+            $self->load_databases;
 
             my @triples;
             $self->db2rdf( $key, \@triples );
@@ -62,7 +65,7 @@ sub retrieve_rdf {
         return unless $key =~ /^[a-z][a-z0-9_-]+$/;
         log_info { "retrieve dbkey $key" };
 
-        $self->load_dblist;
+        $self->load_databases;
 
         my @triples;
         $self->db2rdf( $key, \@triples );
@@ -95,7 +98,7 @@ sub retrieve_rdf {
 sub retrieve_base {
     my $self = shift;
 
-    $self->load_dblist;
+    $self->load_databases;
 
     my @triples;
 
@@ -109,9 +112,9 @@ sub retrieve_base {
     }
 
     # databases without prefix
-    foreach my $key (keys %{ $self->{dblist} }) {
+    foreach my $key (keys %{ $self->{databases} }) {
         next if $key =~ /-/;
-        my $db = $self->{dblist}->{$key};
+        my $db = $self->{databases}->{$key};
     
         my $dburi = $self->db2uri($key);
         push @triples, [ $dburi, NS->uri('dc:subject'), $scheme ];
@@ -126,7 +129,7 @@ sub retrieve_base {
 
 sub db2uri {
     my ($self, $key) = @_;
-    my $db = $self->{dblist}->{$key};
+    my $db = $self->{databases}->{$key};
 
     if ($db) {    
         return iri("http://uri.gbv.de/database/$key");
@@ -159,7 +162,7 @@ sub prefix2rdf {
     prefixonly2rdf( $self, $key, $triples ) || return;
    
     # Alle oder ausgewählte Datenbanken dieser Gruppe hinzufügen
-    @dbkeys = keys %{$self->{dblist}};
+    @dbkeys = keys %{$self->{databases}};
     foreach my $dbkey (@dbkeys) {
         if ( $dbkey =~ /^$key-/ ) {
             my $dburi = $self->db2uri($dbkey);
@@ -185,7 +188,7 @@ sub add_statements {
 
 sub db2rdf {
     my ($self, $key, $triples) = @_;
-    my $db = $self->{dblist}->{$key};
+    my $db = $self->{databases}->{$key};
 
     my $dburi = $self->db2uri($key) || return;
 
@@ -256,11 +259,11 @@ sub db2rdf {
 
     } elsif ( $key =~ /^fachopac-(.+)$/ ) {
         # TODO: daten der anderen DB auch hinzu
-        if ( $self->{dblist}->{"fachopacplus-$1"} ) {
+        if ( $self->{databases}->{"fachopacplus-$1"} ) {
             push @$triples, [ $dburi, NS->uri('rdfs:seeAlso'), $self->db2uri("fachopacplus-$1") ];
         }
     } elsif ( $key =~ /^fachopacplus-(.+)$/ ) {
-        if ( $self->{dblist}->{"fachopac-$1"} ) {
+        if ( $self->{databases}->{"fachopac-$1"} ) {
             push @$triples, [ $dburi, NS->uri('rdfs:seeAlso'), $self->db2uri("fachopac-$1") ];
         }
     }
@@ -280,37 +283,27 @@ sub db2rdf {
 
 sub isil2db {
     my ($self, $isil) = @_;
-    return unless $self->{dblist};
+    return unless $self->{databases};
 
     return unless $isil =~ /^[a-z]+-[a-z0-9-]+$/i;
     my $key = 'opac-'.lc($isil);
 
-    return $self->{dblist}->{$key};
+    return $self->{databases}->{$key};
 }
 
-sub load_dblist {
+sub load_databases {
     my $self = shift;
-
-    my $dbs = try {
-        my $json = get('http://gsoapiwww.gbv.de/unapi-v1/databases');
-        $json = JSON->new->utf8->decode($json);
-        log_debug { "retrieved GBV list of databases" };
-        $json;
-    };
-
-    if ($dbs) {
-        $self->{dblist} = { map { $_->{key} => $_ } @$dbs };
-    } else {
-        log_error { "failed to get GBV list of databases" };
-        $self->{dblist} = { }
+    foreach (qw(databases prefixes)) {
+        $self->{$_} = try {
+            my $json = get("$UNAPI/$_");
+            $json = JSON->new->utf8->decode($json);
+            log_debug { "retrieved GBV list of $_" };
+            $json;
+        } catch {
+            log_error { "failed to get GBV list of $_" };
+            { };
+        };
     }
-
-    $self->{prefixes} = try {
-        my $json = get('http://gsoapiwww.gbv.de/unapi-v1/prefixes');
-        $json = JSON->new->utf8->decode($json);
-        log_debug { "retrieved GBV list of database prefixes" };
-        $json;
-    };
 }
 
 1;
