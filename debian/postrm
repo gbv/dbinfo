@@ -1,0 +1,36 @@
+#!/bin/sh
+set -e
+
+PACKAGE="$DPKG_MAINTSCRIPT_PACKAGE"
+CARTON=/usr/local/bin/carton
+
+case "$1" in
+    remove)
+        # Remove init script links
+        update-rc.d $PACKAGE remove
+
+        # Remove user
+        userdel $PACKAGE || true
+
+        # Remove home directory
+        rm -rf /srv/$PACKAGE
+
+        # Remove log directory
+        rm -rf /var/log/$PACKAGE
+    ;;
+
+    purge)
+        # Remove config files
+        rm -rf /etc/$PACKAGE
+        rm -f /etc/default/$PACKAGE
+
+    upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+    ;;
+     
+    *)
+        echo "postrm called with unknown argument: $1" >&2
+        exit 1
+    ;;
+esac
+
+exit 0

@@ -1,8 +1,5 @@
 requires 'perl', '5.14.1';
 
-requires 'Plack', '>= 1.0';
-requires 'Starman', '>= 0.4008';
-
 requires 'Plack::Middleware::Debug';
 requires 'Plack::Middleware::TemplateToolkit';
 requires 'Plack::Middleware::Log::Contextual';
@@ -15,8 +12,6 @@ requires 'Digest::MD5'; # core?
 requires 'JSON'; # core?
 requires 'Log::Contextual', '0.006000';
 requires 'LWP::Simple'; # ...
-
-#requires 'parent 'GBV::App::URI::Base';
 
 requires 'RDF::Flow', '>= 0.175';
 

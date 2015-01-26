@@ -1,0 +1,6 @@
+cpanfile            srv/dbinfo
+cpanfile.snapshot   srv/dbinfo
+bin/*               srv/dbinfo/bin
+local/*             srv/dbinfo/local
+etc/*               etc/dbinfo
+root/*              srv/dbinfo/root

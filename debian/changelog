@@ -1,0 +1,23 @@
+dbinfo (0.01) stable; urgency=low
+
+  * hacked suggest-dbkey
+  * updated unapi config URL
+  * updated unAPI server URL
+  * update URL to get list of databases
+  * hack gsoapi => gso
+  * Link auf IKT-Liste anzeigen
+  * statistik anzeigen auch wenn Anzahl nicht bekannt
+  * VZG-Rechner als Proxy erkennen
+  * Dokumentation
+  * URL-Pfade angepasst
+  * migrated to upstart
+  * fix status
+  * startup files
+  * dependencies
+  * Debian package configuration
+  * cleanup
+  * first usable version
+  * refactoring
+  * initial commit
+
+ -- Jakob Voss <voss@gbv.de>  

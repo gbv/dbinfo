@@ -1,0 +1,12 @@
+Source: dbinfo
+Section: misc
+Priority: extra
+Maintainer: Jakob Voss <jakob.voss@gbv.de>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.2
+
+Package: dbinfo
+Architecture: any
+Depends: perl-base (>= 5.14.1), cpanminus, starman, libxml-libxml-perl
+Recommends: carton
+Description: dbinfo

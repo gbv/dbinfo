@@ -1,0 +1,26 @@
+.TH "DBINFO" "1" "" "Manual" ""
+.SH NAME
+.PP
+dbinfo \- GBV database information
+.SH SYNOPSIS
+.PP
+The application is automatically started as service, listening on port
+6027.
+.IP
+.nf
+\f[C]
+sudo\ service\ dbinfo\ {status|start|stop|restart}
+\f[]
+.fi
+.SH INSTALLATION
+.PP
+The application is packaged as Debian package and installed at
+\f[C]/srv/dbinfo/\f[].
+Log files are located at \f[C]/var/log/coverdienst/\f[].
+.SH CONFIGURATION
+.PP
+See \f[C]/etc/default/dbinfo\f[] for basic configuration Restart is
+needed after changes.
+.SH SEE ALSO
+.PP
+Source code at <https://github.com/gbv/dbinfo>

@@ -1,20 +1,11 @@
-use v5.14;
-
-
-### 1. instantiate
-
-use Cwd;
-use File::Basename qw(dirname);
-my $root = Cwd::realpath( dirname($0) );
+use v5.14.1;
+use lib 'lib';
 
 use GBV::App::URI::Database;
 
 my $app = GBV::App::URI::Database->new(
-    htdocs => "$root/root" 
+    htdocs => "root" 
 )->to_app;
-
-
-### 2. run
 
 use Plack::Builder;
 
@@ -33,4 +24,3 @@ builder {
 
     $app;
 };
-

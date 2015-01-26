@@ -1,8 +1,0 @@
-app.psgi          srv/{$package_name}
-cpanfile          srv/{$package_name}
-cpanfile.snapshot srv/{$package_name}
-run.sh            srv/{$package_name}
-
-lib/*    srv/{$package_name}/lib
-local/*  srv/{$package_name}/local
-root/*   srv/{$package_name}/root
