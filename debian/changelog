@@ -1,5 +1,7 @@
-dbinfo (0.01) stable; urgency=low
+dbinfo (0.06) stable; urgency=low
 
+  * version
+  * migrated debian build procedure
   * hacked suggest-dbkey
   * updated unapi config URL
   * updated unAPI server URL
@@ -20,4 +22,4 @@ dbinfo (0.01) stable; urgency=low
   * refactoring
   * initial commit
 
- -- Jakob Voss <voss@gbv.de>  
+ -- Jakob Voss <voss@gbv.de>  Mon, 26 Jan 2015 15:23:00 +0100

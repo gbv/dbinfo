@@ -5,9 +5,11 @@ UC_PACKAGE=$(shell echo $(PACKAGE) | tr a-z A-Z)
 
 # TODO: changelog besser automatisch erstellen
 VERSION=$(shell git tag | sort -r | perl -nE '/^\d+(\.\d+)+$$/ && do {say; exit}')
+TIMESTAMP=$(shell git log -n1 --format="%ad" --date=rfc)
 AUTHOR=Jakob Voss <voss@gbv.de>
 
-.PHONY: changes
+.PHONY: debian/changelog
+
 changes: debian/changelog
 debian/changelog:
 	echo "$(PACKAGE) ($(VERSION)) stable; urgency=low" > debian/changelog
