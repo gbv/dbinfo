@@ -2,7 +2,7 @@
 
 dbinfo - GBV database information
 
-[![Build Status](https://travis-ci.org/gbv/dbinfo.svg)](https://travis-ci.org/gbv/coverdienst)
+[![Build Status](https://travis-ci.org/gbv/dbinfo.svg)](https://travis-ci.org/gbv/dbinfo)
 
 # SYNOPSIS
 
@@ -13,7 +13,7 @@ The application is automatically started as service, listening on port 6027.
 # INSTALLATION
 
 The application is packaged as Debian package and installed at
-`/srv/dbinfo/`. Log files are located at `/var/log/coverdienst/`.
+`/srv/dbinfo/`. Log files are located at `/var/log/dbinfo/`.
 
 # CONFIGURATION
 

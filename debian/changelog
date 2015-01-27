@@ -1,25 +1,5 @@
-dbinfo (0.06) stable; urgency=low
+dbinfo (0.6.0-pre) stable; urgency=low
 
-  * version
-  * migrated debian build procedure
-  * hacked suggest-dbkey
-  * updated unapi config URL
-  * updated unAPI server URL
-  * update URL to get list of databases
-  * hack gsoapi => gso
-  * Link auf IKT-Liste anzeigen
-  * statistik anzeigen auch wenn Anzahl nicht bekannt
-  * VZG-Rechner als Proxy erkennen
-  * Dokumentation
-  * URL-Pfade angepasst
-  * migrated to upstart
-  * fix status
-  * startup files
-  * dependencies
-  * Debian package configuration
-  * cleanup
-  * first usable version
-  * refactoring
-  * initial commit
+  * migrate to easier Debian packaging
 
  -- Jakob Voss <voss@gbv.de>  Mon, 26 Jan 2015 15:23:00 +0100
