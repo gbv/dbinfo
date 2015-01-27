@@ -1,9 +1,9 @@
-language: perl
-perl:
-    - 5.14
+language: bash
 before_install:
     - sudo make dependencies
 install:
+    # don't use perlbrew
+    - sudo chown -R travis:travis /home/travis/.cpanm
     - carton install --deployment
 script:
     - export PACKAGE=`perl -ne 'print $1 if /^Package:\s+(.+)/;' < debian/control`

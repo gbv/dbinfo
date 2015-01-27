@@ -82,7 +82,7 @@ sub prepare_app {
 
         enable 'JSONP';
 
-        mount '/suggest-dbkey' => sub {
+        mount '/api/suggest-dbkey' => sub {
             my $id = Plack::Request->new($_[0])->param('id') // '';
             my $result = $gbv_dbinfo->suggest_dbkey( $id );
             my $json = JSON->new->encode( $result );
