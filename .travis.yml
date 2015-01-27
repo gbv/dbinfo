@@ -2,19 +2,13 @@ language: perl
 perl:
     - 5.14
 before_install:
-    - export PACKAGE=`perl -nE 'say $1 if /^Package:\s+(.+)/' < debian/control`
-    - export DEPENDS=`perl -nE 'next unless $_ =~ s/^Depends:\s+//; $_ =~ s/[, ]+|\([^)]+\)/ /g; say' < debian/control`
-    - export VERSION=`perl -nE '/\(([^)]+)\)/; say $1; exit' < debian/changelog
-    - export ARCHITECTURE=`dpkg --print-architecture`
-    - export RELEASE_FILE="${PACKAGE}_${VERSION}_${ARCHITECTURE}.deb"
-    - sudo apt-get update -qq
-    - sudo apt-get install fakeroot dpkg-dev ${DEPENDS}
+    - sudo make dependencies
 install:
-    - sudo cpanm Carton
     - carton install --deployment
 script:
-    - make debian-package
-    - sudo dpkg -i ${RELEASE_FILE}
+    - export PACKAGE=`perl -ne 'print $1 if /^Package:\s+(.+)/;' < debian/control`
+    - make release-file
+    - sudo dpkg -i ${PACKAGE}_*.deb
     - sudo service ${PACKAGE} status
     - sudo service ${PACKAGE} restart
     - carton exec prove -Ilib --verbose

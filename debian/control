@@ -7,6 +7,6 @@ Standards-Version: 3.9.2
 
 Package: dbinfo
 Architecture: any
-Depends: perl-base (>= 5.14.1), cpanminus, starman, libxml-libxml-perl
+Depends: perl-base (>= 5.14.1), cpanminus, starman, libxml-libxml-perl, librdf-trine-perl
 Recommends: carton
 Description: dbinfo

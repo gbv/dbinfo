@@ -1,13 +1,9 @@
 use v5.14.1;
-use lib 'lib';
-
-use GBV::App::URI::Database;
-
-my $app = GBV::App::URI::Database->new(
-    htdocs => "root" 
-)->to_app;
-
 use Plack::Builder;
+
+use lib 'lib';
+use GBV::App::URI::Database;
+my $app = GBV::App::URI::Database->new(htdocs => "root")->to_app;
 
 my $debug = ($ENV{PLACK_ENV} // '') =~ /^(development|debug)$/;
 
