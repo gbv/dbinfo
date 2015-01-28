@@ -7,9 +7,14 @@ install:
     - carton install --deployment
 script:
     - export PACKAGE=`perl -ne 'print $1 if /^Package:\s+(.+)/;' < debian/control`
+    - export TEST_URL=app
+    - carton exec prove -Ilib --verbose
     - make release-file
     - sudo dpkg -i ${PACKAGE}_*.deb
     - sudo service ${PACKAGE} status
     - sudo service ${PACKAGE} restart
+    - export TEST_URL=deployed
     - carton exec prove -Ilib --verbose
 cache: apt
+after_failure:
+    - cat /var/log/${PACKAGE}/error.log

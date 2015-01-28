@@ -3,7 +3,7 @@ use Plack::Builder;
 
 use lib 'lib';
 use GBV::App::URI::Database;
-my $app = GBV::App::URI::Database->new(htdocs => "root")->to_app;
+my $app = GBV::App::URI::Database->new->to_app;
 
 my $debug = ($ENV{PLACK_ENV} // '') =~ /^(development|debug)$/;
 

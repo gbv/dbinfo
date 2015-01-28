@@ -42,6 +42,7 @@ sub prepare_app {
     my $self = shift;
     return if $self->{app};
 
+    $self->{htdocs} = 'root';
     my $base = ref($self);
     if ( $base =~ /^GBV::App::URI::(.+)$/ and $1 ne 'Base' ) {
         $base = "http://uri.gbv.de/" . lc($1) . '/';
