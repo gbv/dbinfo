@@ -1,11 +1,12 @@
-# carton
+*~
 local/
 
-# debian
-debian/files
-debian/*.debhelper.log
+debian/*.log
 debian/*.debhelper
 debian/*.substvars
+debian/files
 debian/*/
-*.changes
+
 *.deb
+
+logs/

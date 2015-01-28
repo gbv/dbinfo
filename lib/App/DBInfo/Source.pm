@@ -1,6 +1,5 @@
-use strict;
-use warnings;
-package GBV::RDF::Source::DBInfo; 
+package App::DBInfo::Source; 
+use v5.14;
 
 use Log::Contextual::Easy::Default;
 
@@ -14,7 +13,7 @@ use RDF::Trine qw(iri statement literal blank);
 
 use LWP::Simple qw(mirror is_success RC_NOT_MODIFIED);
 use File::Temp qw(tempfile tempdir);
-
+use Encode;
 use JSON;
 use Digest::MD5 qw(md5_hex);
 use Scalar::Util qw(blessed);
@@ -25,7 +24,7 @@ our $CACHE = CHI->new( driver => 'Memory', global => 1, expires_in => '1 day' );
 our $UNAPI = "http://gsoapiwww.gbv.de/unapi";
 
 use RDF::NS;
-use constant NS => RDF::NS->new('20130926');
+use constant NS => RDF::NS->new('20130930');
 
 sub retrieve_rdf {
     my ($self, $env) = @_;
@@ -331,15 +330,16 @@ sub load_part {
 
 sub suggest_dbkey {
     my ($self, $search) = @_;
+    my $match = quotemeta $search;
 
     $self->load;
     my ($completion, $description, $uris) = ([],[],[]);
 
     my @dbkeys;
     my $i=0;
-    foreach my $key (sort keys $self->{databases}) {
+    foreach my $key (sort keys %{$self->{databases}}) {
         if ($key ge $search) {
-            push @dbkeys, $key;
+            push @dbkeys, $key if $key =~ /$match/;
             last if $i++ > 10;            
         }
     }
@@ -349,7 +349,7 @@ sub suggest_dbkey {
         next if !$db;
 
         push @$completion, $dbkey;
-        push @$description, $db->{title};
+        push @$description, encode('utf-8',$db->{title});
         push @$uris, "http://uri.gbv.de/database/$dbkey";
     }
 

@@ -1,15 +1,25 @@
 language: bash
-before_install:
-    - sudo make dependencies
-install:
-    # don't use perlbrew
-    - sudo chown -R travis:travis /home/travis/.cpanm
-    - carton install --deployment
-script:
-    - export PACKAGE=`perl -ne 'print $1 if /^Package:\s+(.+)/;' < debian/control`
-    - make release-file
-    - sudo dpkg -i ${PACKAGE}_*.deb
-    - sudo service ${PACKAGE} status
-    - sudo service ${PACKAGE} restart
-    - carton exec prove -Ilib --verbose
+sudo: required
 cache: apt
+
+# we don't use docker but this triggers travis-ci to provide Ubuntu 14.04
+services:
+    - docker
+before_install:
+    - lsb_release -a
+    - sudo apt-get update -qq
+install:
+    - sudo make dependencies
+    - make local
+script:
+    # make test and create Debian package
+    - make package
+    # locally install package
+    - sudo dpkg -i dbinfo_*.deb
+    - sudo service dbinfo status
+    # test against localhost
+    - export TEST_URL=6006
+    - prove -Ilib -Ilocal/lib/perl5 -v
+
+after_failure:
+    - tail -200 /var/log/dbinfo/error.log

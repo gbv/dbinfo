@@ -1,3 +1,10 @@
+dbinfo (0.7.0) unstable; urgency=medium
+
+  * massive refactoring
+  * additional suggest endpoint at /api/dbkey
+
+ -- Jakob Voß <jakob.voss@gbv.de>  Tue, 22 Sep 2015 14:04:57 +0200
+
 dbinfo (0.6.0-pre) stable; urgency=low
 
   * migrate to easier Debian packaging
