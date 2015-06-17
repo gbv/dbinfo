@@ -5,6 +5,7 @@ use Test::More;
 plan skip_all => 1 if $ENV{TEST_DEPLOYED};
 
 foreach (`find lib/ -iname "*.pm"`) {
+    chomp;
     s{^lib/|\.pm$}{}g;
     s{/}{::}g;
     use_ok "$_";

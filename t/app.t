@@ -3,9 +3,8 @@ use Test::More;
 use Plack::Test;
 use HTTP::Request::Common;
 
-use lib 't';
-use AppLoader;
-my $app = AppLoader->new( dbinfo => 'GBV::App::URI::Database' );
+use Plack::Util::Load;
+my $app = load_app( $ENV{TEST_URL} || 'GBV::App::DBInfo', verbose => 1 );
 
 test_psgi $app, sub {
     my $cb = shift;

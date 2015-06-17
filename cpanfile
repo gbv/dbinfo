@@ -30,3 +30,5 @@ requires 'Template::Plugin::Number::Format';
 
 requires 'Try::Tiny';
 requires 'URI::Escape';
+
+test_requires 'Plack::Util::Load';

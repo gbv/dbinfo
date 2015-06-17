@@ -1,7 +1,8 @@
+package GBV::App::DBInfo;
 use v5.14.1;
 use Plack::Builder;
+use parent 'Plack::Component';
 
-use lib 'lib';
 use GBV::App::URI::Database;
 my $app = GBV::App::URI::Database->new->to_app;
 
@@ -20,3 +21,5 @@ builder {
 
     $app;
 };
+
+1;

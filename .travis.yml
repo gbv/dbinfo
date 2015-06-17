@@ -7,14 +7,14 @@ install:
     - carton install --deployment
 script:
     - export PACKAGE=`perl -ne 'print $1 if /^Package:\s+(.+)/;' < debian/control`
-    - export TEST_URL=app
-    - carton exec prove -Ilib --verbose
+    - export TEST_URL=app.psgi
+    - carton exec -- prove -Ilib -v
     - make release-file
     - sudo dpkg -i ${PACKAGE}_*.deb
     - sudo service ${PACKAGE} status
     - sudo service ${PACKAGE} restart
-    - export TEST_URL=deployed
-    - carton exec prove -Ilib --verbose
+    - export TEST_URL=localhost:6006
+    - carton exec -- prove -Ilib -v
 cache: apt
 after_failure:
-    - cat /var/log/${PACKAGE}/error.log
+    - tail -200 /var/log/${PACKAGE}/error.log
