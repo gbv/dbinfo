@@ -2,12 +2,11 @@
 set -e
 
 PACKAGE="$DPKG_MAINTSCRIPT_PACKAGE"
-CARTON=/usr/local/bin/carton
 
 case "$1" in
     remove)
         # Remove init script links
-        update-rc.d $PACKAGE remove
+        update-rc.d -f $PACKAGE remove
 
         # Remove user
         userdel $PACKAGE || true
@@ -23,6 +22,7 @@ case "$1" in
         # Remove config files
         rm -rf /etc/$PACKAGE
         rm -f /etc/default/$PACKAGE
+    ;;
 
     upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
     ;;

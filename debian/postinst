@@ -2,15 +2,9 @@
 set -e
 
 PACKAGE="$DPKG_MAINTSCRIPT_PACKAGE"
-CARTON=/usr/local/bin/carton
 
 case "$1" in
     configure)
-
-        # install carton, unless available
-        if [ ! -e "$CARTON" ] ; then
-            cpanm Carton
-        fi
 
         # Create group if not existing
         getent group $PACKAGE || groupadd $PACKAGE
@@ -22,21 +16,20 @@ case "$1" in
                 $PACKAGE
         fi
 
-        # Make sure user owns home directory and config directory
-        chown -R $PACKAGE:$PACKAGE /srv/$PACKAGE
-        chown -R $PACKAGE:$PACKAGE /etc/$PACKAGE
-
         # Create log directory
         if [ ! -e /var/log/$PACKAGE ]; then
             mkdir /var/log/$PACKAGE
-            chown -R $PACKAGE:$PACKAGE /var/log/$PACKAGE
         fi
 
         # Create config directory
         if [ ! -e /etc/$PACKAGE ]; then
             mkdir /etc/$PACKAGE
-            chown -R $PACKAGE:$PACKAGE /etc/$PACKAGE
         fi
+
+        # Make sure user owns his directories
+        chown -R $PACKAGE:$PACKAGE /srv/$PACKAGE
+        chown -R $PACKAGE:$PACKAGE /var/log/$PACKAGE
+        chown -R $PACKAGE:$PACKAGE /etc/$PACKAGE
 
         # Install web application as service
         update-rc.d -f $PACKAGE defaults

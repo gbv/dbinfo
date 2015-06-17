@@ -1,10 +1,8 @@
-use v5.14.1;
+use v5.14;
 use Plack::Builder;
+use App::DBInfo;
 
-use lib 'lib';
-use GBV::App::URI::Database;
-my $app = GBV::App::URI::Database->new->to_app;
-
+my $app = App::DBInfo->new->to_app;
 my $debug = ($ENV{PLACK_ENV} // '') =~ /^(development|debug)$/;
 
 builder {
@@ -19,4 +17,4 @@ builder {
     enable_if { !$debug } 'Log::Contextual', level => 'warn';
 
     $app;
-};
+}
