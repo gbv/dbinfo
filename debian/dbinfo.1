@@ -1,11 +1,11 @@
 .TH "DBINFO" "1" "" "Manual" ""
 .SH NAME
 .PP
-dbinfo \- GBV database information
+dbinfo \- GBV Datenbankverzeichnis
 .SH SYNOPSIS
 .PP
 The application is automatically started as service, listening on port
-6027.
+6006.
 .IP
 .nf
 \f[C]
@@ -14,14 +14,53 @@ sudo\ service\ dbinfo\ {status|start|stop|restart}
 .fi
 .SH INSTALLATION
 .PP
-The application is packaged as Debian package and installed at
-\f[C]/srv/dbinfo/\f[].
-Log files are located at \f[C]/var/log/dbinfo/\f[].
-.SH CONFIGURATION
+The software is released as Debian package for Ubuntu 14.04 LTS.
+Other Debian based distributions \f[I]might\f[] work too.
+Releases can be found at <https://github.com/gbv/dbinfo/releases>
 .PP
-See \f[C]/etc/default/dbinfo\f[] for basic configuration and
-\f[C]/etc/dbinfo\f[] for extended configuration files.
-Restart is needed after changes.
+To install required dependencies either use a package manager such as
+\f[C]gdebi\f[], manually install dependencies (inspectable via
+\f[C]dpkg\ \-I\ dbinfo_*.deb\f[]):
+.IP
+.nf
+\f[C]
+sudo\ dpkg\ \-i\ ...\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ #\ install\ dependencies
+sudo\ dpkg\ \-i\ dbinfo_X.Y.Z_amd64.deb\ \ \ \ #\ change\ X.Y.Z
+\f[]
+.fi
+.PP
+After installation the service is available at localhost on port 6006.
+Better put the service behind a reverse proxy to enable SSL and nice
+URLs!
+.SH USAGE
+.PP
+GBV Datenbankverzeichnis provides a Linked Open Data endpoint with RDF
+data in several serialization forms.
+The service further provides an OpenSearch Suggest AI at
+\f[C]/api/dbkey\f[] to query database prefixes.
+.SH ADMINISTRATION
+.SS Configuration
+.PP
+Config file \f[C]/etc/default/dbinfo\f[] only contains basic server
+configuration in form of simple key\-values pairs:
+.IP \[bu] 2
+\f[C]PORT\f[] \- port number (required, 6006 by default)
+.IP \[bu] 2
+\f[C]WORKERS\f[] \- number of parallel connections (required, 5 by
+default).
+.PP
+Additional configuration is placed in \f[C]/etc/dbinfo\f[].
+Restart is required after changes.
+.SS Logging
+.PP
+Log files are located at \f[C]/var/log/dbinfo/\f[].
 .SH SEE ALSO
 .PP
-Source code at <https://github.com/gbv/dbinfo>
+The source code of dbinfo is managed in a public git repository at
+<https://github.com/gbv/dbinfo>.
+Please report bugs and feature request at
+<https://github.com/gbv/dbinfo/issues>!
+.PP
+The Changelog is located in file \f[C]debian/changelog\f[].
+.PP
+Development guidelines are given in file \f[C]CONTRIBUTING.md\f[].

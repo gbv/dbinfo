@@ -27,6 +27,21 @@ ifeq ($(PANDOC),)
   PANDOC = $(error pandoc is required but not installed)
 endif
 
+doc/dbinfo.md: README.md CONTRIBUTING.md
+	echo '# Usage' > $@
+	pandoc -t markdown --filter doc/filter.pl < USAGE.md >> $@
+	echo >> $@
+	echo '# Administration' >> $@
+	pandoc -t markdown --filter doc/filter.pl < README.md >> $@
+	echo >> $@
+	echo '# Development' >> $@
+	echo >> $@
+	pandoc -t markdown --filter doc/filter.pl < CONTRIBUTING.md >> $@
+
+# TODO: build documentation to include in release
+docs: doc/dbinfo.md manpage doc.makefile
+	$(MAKE) -f doc.makefile VERSION=$(VERSION) html pdf
+
 manpage: debian/$(PACKAGE).1
 debian/$(PACKAGE).1: README.md $(CONTROL)
 	@grep -v '^\[!' $< | $(PANDOC) -s -t man -o $@ \

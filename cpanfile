@@ -31,3 +31,6 @@ requires 'Try::Tiny';
 
 # test requirements
 test_requires 'Plack::Util::Load';
+
+# build requirements
+build_requires 'Pandoc::Elements';

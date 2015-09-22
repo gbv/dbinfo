@@ -1,4 +1,5 @@
 *~
+*.tmp
 local/
 
 debian/*.log
@@ -10,3 +11,7 @@ debian/*/
 *.deb
 
 logs/
+
+dbinfo.pdf
+dbinfo.html
+doc/dbinfo.md
