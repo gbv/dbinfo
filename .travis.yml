@@ -23,3 +23,17 @@ script:
 
 after_failure:
     - tail -200 /var/log/dbinfo/error.log
+
+# Release Debian package via GitHub releases on tagged commits
+before_deploy:
+    - export RELEASE_FILE=$(ls *.deb)
+    - echo "deploying $RELEASE_FILE to GitHub releases"
+deploy:
+    provider: releases
+    api_key:
+        secure: U3ILV8vek4WAIw22aRUaSUwk3iLXkjEZ/eMuvemG5SBxOzciccXogvHnO/0H/Vtj2b4ZcbiUpwBuIKjzsQSv68P7VyVl5ZRSb4zqt/ugsFhI9/RZm4nFtFguTd2L3dANYFxJZ3cqvLDUrok65n/1wdzi1AyiQeDaZ0jG/12m7Xw=
+    file:
+        - "${RELEASE_FILE}"
+    on:
+        tags: true
+
