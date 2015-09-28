@@ -1,0 +1,7 @@
+{
+    "uri": "@id",
+    "dbkey": "http://purl.org/ontology/gbv/dbkey",
+    "title": "http://purl.org/dc/terms/title",
+    "count": "http://purl.org/dc/terms/extent",
+    "srubase": "http://purl.org/ontology/gbv/srubase"
+}

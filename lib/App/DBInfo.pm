@@ -31,7 +31,7 @@ use App::DBInfo::Source;
 use Plack::Builder;
 
 use parent 'Plack::Component', 'Exporter';
-use Plack::Util::Accessor qw(source base formats htdocs);
+use Plack::Util::Accessor qw(source base);
 
 use CHI;
 use Plack::Middleware::Negotiate;
@@ -43,14 +43,16 @@ my $NEGOTIATE = Plack::Middleware::Negotiate->new(
     parameter => 'format',
     extension => 0,
     formats => {
-        nt   => { type => 'text/plain' },
-        rdf  => { type => 'application/rdf+xml' },
-        xml  => { type => 'application/rdf+xml' },
-        rdfxml => { type => 'application/rdf+xml' },
-        ttl  => { type => 'text/turtle' },
-        json => { type => 'application/rdf+json' },
-        html => { type => 'text/html' },
-        _    => { charset => 'utf-8', }
+        nt      => { type => 'text/plain' },
+        rdf     => { type => 'application/rdf+xml' },
+        xml     => { type => 'application/rdf+xml' },
+        rdfxml  => { type => 'application/rdf+xml' },
+        ttl     => { type => 'text/turtle' },
+        json    => { type => 'application/rdf+json' },
+        dbinfo  => { type => 'application/ld+json' },
+        ld      => { type => 'application/ld+json' },
+        html    => { type => 'text/html' },
+        _       => { charset => 'utf-8', }
     }
 );
 
@@ -59,19 +61,13 @@ sub prepare_app {
     my $self = shift;
     return if $self->{app};
 
-    $self->{htdocs} = 'public';
     $self->base('http://uri.gbv.de/database/'); 
-
-    $self->formats([qw(ttl json rdfxml)])
-        unless $self->formats;
-    push @{$self->formats}, 'dbinfo';
 
     # TODO: get rid of RDF::Flow
     my $gbv_dbinfo = App::DBInfo::Source->new;
-    my $enrich = rdflow( from => $self->htdocs, name => 'Additional RDF files' );
     $self->source( 
         RDF::Flow::Cached->new(
-            union( $gbv_dbinfo, $enrich ),
+            $gbv_dbinfo,
             CHI->new( driver => 'Memory', global => 1, expires_in => '1 hour' )
         )
     );
@@ -79,7 +75,7 @@ sub prepare_app {
     $self->{app} = builder {
 
         enable 'Static', 
-            root => $self->htdocs, 
+            root => 'public',
             path => qr{\.(css|png|gif|js|ico)$};
 
         # cache everything else for 10 seconds. TODO: set cache time
@@ -128,7 +124,7 @@ sub core {
     my $format = $env->{'negotiate.format'} // 'html';
 
     # serialize and return RDF data
-    if ($format ne 'html') {
+    unless (grep { $format eq $_ } qw(html dbinfo ld)) {
         if ( $env->{'rdflow.error'} ) {
             return [ 500, [ 'Content-Type' => 'text/plain' ], [ $env->{'rdflow.error'} ] ];
         }
@@ -161,15 +157,15 @@ sub core {
     # initialize HTML format via Template
     my $vars = $env->{'tt.vars'} || { };
 
-    $vars->{'formats'} = [ @{$self->formats} ];
+    $vars->{'formats'} = [qw(ttl json rdfxml ld)];
 
     my $lazy = RDF::Lazy->new( $rdf, namespaces => NS );
 
     if ( $rdf and $rdf->size ) {
-        if ( ($req->param('format')||'') eq 'dbinfo' ) {
+        if ( $format =~ /^(dbinfo|ld)$/ ) {
             $vars->{'JSON_TRUE'} = JSON::true;
             $vars->{'JSON_FALSE'} = JSON::false;
-            $env->{'tt.path'} = '/dbinfo.json';
+            $env->{'tt.path'} = '/ld.json';
         } elsif ( $uri eq $self->base ) {
             # ...
         } elsif ( $lazy->resource($uri)->type('skos:Concept') ) {
@@ -192,7 +188,7 @@ sub core {
     $env->{'tt.vars'} = $vars;
 
     state $app = Plack::Middleware::TemplateToolkit->new( 
-        INCLUDE_PATH => $self->htdocs,
+        INCLUDE_PATH => 'public',
         RELATIVE     => 1,
         INTERPOLATE  => 1, 
         pass_through => 0,

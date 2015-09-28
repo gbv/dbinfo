@@ -4,6 +4,7 @@
     SET dbs = uri;
 
     data = {
+        "@context" => "http://uri.gbv.de/database/dbinfo.jsonld",
         title => uri.dcterms_title.str,
         uri   => uri.str
     };
