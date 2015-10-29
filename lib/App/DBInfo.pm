@@ -50,7 +50,7 @@ my $NEGOTIATE = Plack::Middleware::Negotiate->new(
         ttl     => { type => 'text/turtle' },
         json    => { type => 'application/rdf+json' },
         dbinfo  => { type => 'application/ld+json' },
-        ld      => { type => 'application/ld+json' },
+        jsonld  => { type => 'application/ld+json' },
         html    => { type => 'text/html' },
         _       => { charset => 'utf-8', }
     }
@@ -76,7 +76,7 @@ sub prepare_app {
 
         enable 'Static', 
             root => 'public',
-            path => qr{\.(css|png|gif|js|ico)$};
+            path => qr{\.(css|png|gif|js|ico|jsonld)$};
 
         # cache everything else for 10 seconds. TODO: set cache time
         enable 'Cached',
@@ -124,7 +124,7 @@ sub core {
     my $format = $env->{'negotiate.format'} // 'html';
 
     # serialize and return RDF data
-    unless (grep { $format eq $_ } qw(html dbinfo ld)) {
+    unless (grep { $format eq $_ } qw(html dbinfo jsonld)) {
         if ( $env->{'rdflow.error'} ) {
             return [ 500, [ 'Content-Type' => 'text/plain' ], [ $env->{'rdflow.error'} ] ];
         }
@@ -157,15 +157,17 @@ sub core {
     # initialize HTML format via Template
     my $vars = $env->{'tt.vars'} || { };
 
-    $vars->{'formats'} = [qw(ttl json rdfxml ld)];
+    $vars->{'formats'} = [qw(ttl json rdfxml jsonld)];
 
     my $lazy = RDF::Lazy->new( $rdf, namespaces => NS );
 
     if ( $rdf and $rdf->size ) {
-        if ( $format =~ /^(dbinfo|ld)$/ ) {
+        if ( $format =~ /^(dbinfo|jsonld)$/ ) {
             $vars->{'JSON_TRUE'} = JSON::true;
             $vars->{'JSON_FALSE'} = JSON::false;
-            $env->{'tt.path'} = '/ld.json';
+
+            $env->{'tt.path'} = '/jsonld.json';
+
         } elsif ( $uri eq $self->base ) {
             # ...
         } elsif ( $lazy->resource($uri)->type('skos:Concept') ) {
@@ -178,8 +180,6 @@ sub core {
     } 
 
     $vars->{uri} = $lazy->resource($uri);
-
-    $vars->{apptitle}  = 'GBV Datenbankverzeichnis';
 
     $vars->{error}     = $env->{'rdflow.error'};
     $vars->{timestamp} = $env->{'rdflow.timestamp'};

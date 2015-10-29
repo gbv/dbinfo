@@ -24,11 +24,15 @@ test_psgi $app, sub {
     is $res->header('Content-Type'),'application/rdf+json; charset=utf-8','RDF/JSON';
     my $rdf = decode_json($res->decoded_content);
 
-    is_deeply $rdf->{'http://uri.gbv.de/database/opac-de-ilm1'}
-            ->{'http://purl.org/dc/terms/title'}, [ {
+    my ($title) = grep { $_->{lang} eq 'de' } @{
+        $rdf->{'http://uri.gbv.de/database/opac-de-ilm1'}
+            ->{'http://purl.org/dc/terms/title'} };
+
+    is_deeply $title, {
                 'type' => 'literal',
-                'value' => "Katalog der Universit\x{e4}tsbibliothek Ilmenau"
-           } ], 'got RDF/XML with Unicode';
+                'value' => "Katalog der Universit\x{e4}tsbibliothek Ilmenau",
+                'lang' => 'de',
+           }, 'got RDF/XML with Unicode';
 };
 
 done_testing;

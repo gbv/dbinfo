@@ -10,3 +10,4 @@ debian/*/
 *.deb
 
 logs/
+doc/dbinfo.*

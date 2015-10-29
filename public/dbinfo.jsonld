@@ -1,7 +1,21 @@
 {
     "uri": "@id",
+    "title": {
+        "@id": "http://purl.org/dc/terms/title",
+        "@container": "@language"
+    },
     "dbkey": "http://purl.org/ontology/gbv/dbkey",
-    "title": "http://purl.org/dc/terms/title",
-    "count": "http://purl.org/dc/terms/extent",
-    "srubase": "http://purl.org/ontology/gbv/srubase"
+    "srubase": "http://purl.org/ontology/gbv/srubase",
+    "picabase": "http://purl.org/ontology/gbv/picabase"
+    "solrbase": "http://purl.org/ontology/gbv/solrbase"
+    "oaibase": "http://purl.org/ontology/gbv/oaibase",
+
+    "homepage": "http://xmlns.com/foaf/0.1/homepage",
+    "infourl": "http://xmlns.com/foaf/0.1/page",
+
+    "opacOf": {
+        "@reverse": "http://purl.org/ontology/gbv/opac"
+    },
+
+    "count": "http://purl.org/dc/terms/extent"
 }

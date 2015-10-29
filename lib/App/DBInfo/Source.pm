@@ -17,11 +17,18 @@ use Encode;
 use JSON;
 use Digest::MD5 qw(md5_hex);
 use Scalar::Util qw(blessed);
+use List::Util qw(first);
+use YAML;
 
 use CHI;
 our $CACHE = CHI->new( driver => 'Memory', global => 1, expires_in => '1 day' );
 
-our $UNAPI = "http://gsoapiwww.gbv.de/unapi";
+my $CONFIG = first { -e $_ } '/etc/dbinfo/config.yml','etc/config.yml';
+$CONFIG = $CONFIG ? YAML::LoadFile($CONFIG) : { };
+
+die "Missing unapi URL in config file\n" unless $CONFIG->{unapi};
+$CONFIG->{unapi} =~ s{/$}{};
+
 
 use RDF::NS;
 use constant NS => RDF::NS->new('20130930');
@@ -189,27 +196,35 @@ sub add_statements {
 
 sub db2rdf {
     my ($self, $key, $triples) = @_;
-    my $db = $self->{databases}->{$key};
 
+    my $db = $self->{databases}->{$key};
     my $dburi = $self->db2uri($key) || return;
+
+    log_debug { "database found for $key" };
 
     my $model = RDF::Trine::Model->new;
 
-    my ($host,$dbsid,$title,$restricted) = ($db->{host}, $db->{dbsid}, $db->{title});
-    log_debug { "database found for $key $host, $title" };
+    my $dbsid = $db->{dbsid};
+    my $url   = $db->{url};
+    my $restricted;
 
+    push @$triples, [ $dburi, NS->uri('dcterms:title'), literal($db->{title}, 'de') ]
+        if $db->{title};
+
+    push @$triples, [ $dburi, NS->uri('dcterms:title'), literal($db->{title_en}, 'en') ]
+        if $db->{title_en};
+
+    push @$triples, [ $dburi, NS->uri('gbv:dbkey'), literal($key) ];
+
+    my $host = $db->{host};
     if ( $host && $dbsid ) {
-        $host =~ s/gsoapi/gso/; # HACK
-        my $url = "http://$host/DB=$dbsid/";
-        
-        my $srubase = "http://sru.gbv.de/$key";
-        push @$triples, [ $dburi, NS->uri('gbv:srubase'), iri($srubase) ] if $srubase;
+        push @$triples, [ $dburi, NS->uri('gbv:srubase'), iri("http://sru.gbv.de/$key") ];
 
-        push @$triples, 
-            [ $dburi, NS->uri('gbv:picabase'), iri($url) ],
-            [ $dburi, NS->uri('gbv:dbkey'), literal($key) ],
-            [ $dburi, NS->uri('foaf:homepage'), iri($url) ]
-        ;
+        my $picabase = "http://$host/DB=$dbsid/";
+        push @$triples, [ $dburi, NS->uri('gbv:picabase'), iri($picabase) ];
+
+        $url ||= $picabase;
+    }
 
 =head1 COUNT
         my $counturl = $url.'XML=Y/CMD?ACT=SRCHA&IKT=1016&TRM=ppn[%23]%3F';
@@ -247,7 +262,8 @@ sub db2rdf {
             log_error { 'Failed to get number of titles: '.$@ };
         }
 =cut
-    }
+
+    push @$triples, [ $dburi, NS->uri('foaf:homepage'), iri($url) ] if $url;
 
     if (defined $db->{'restricted'} and not $db->{'restricted'}) {
         push @$triples, [ $dburi, NS->uri('rdf:type'), NS->uri('daiaserv:Openaccess') ];
@@ -269,11 +285,13 @@ sub db2rdf {
         }
     }
 
-    if ( $title ) {
-        push @$triples, [ $dburi, NS->uri('dcterms:title'), literal($title) ];
-    }
-
-    foreach my $type (qw(daia:Service http://purl.org/cld/cdtype/CatalogueOrIndex void:Dataset)) {
+    foreach my $type (qw(
+        daia:Service 
+        http://purl.org/cld/cdtype/CatalogueOrIndex 
+        void:Dataset
+        schema:Dataset
+        )
+    ) {
        push @$triples, [ $dburi, NS->uri('rdf:type'), NS->uri($type) ];
     }
     
@@ -304,7 +322,8 @@ sub load_part {
 
     $self->{tempdir} ||= tempdir();
 
-    my ($url, $file) = ("$UNAPI/$name", $self->{tempdir}.$name);
+    my $url  = $CONFIG->{unapi} . "/$name";
+    my $file = $self->{tempdir}.$name;
         
     my $mirror = mirror($url, $file);
 

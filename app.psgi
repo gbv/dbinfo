@@ -1,17 +1,21 @@
 use v5.14;
 use Plack::Builder;
 use App::DBInfo;
+use List::Util qw(first);
+use YAML ();
 
 my $app = App::DBInfo->new->to_app;
 my $debug = ($ENV{PLACK_ENV} // '') =~ /^(development|debug)$/;
+
+my $config = first { -e $_ } '/etc/dbinfo/config.yml','etc/config.yml';
+$config = $config ? YAML::LoadFile($config) : { };
 
 builder {
     enable_if { $debug } 'Debug';
     enable_if { $debug } 'Debug::TemplateToolkit';
 
-    # TODO: move to config file
-    enable 'Plack::Middleware::XForwardedFor',
-        trust => ['127.0.0.1','193.174.240.0/24','195.37.139.0/24'];
+    enable_if { $config->{proxy} } 'Plack::Middleware::XForwardedFor',
+        trust => $config->{proxy};
 
     enable 'SimpleLogger';
     enable_if { $debug }  'Log::Contextual', level => 'trace';

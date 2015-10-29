@@ -1,5 +1,5 @@
 ---
-title: GBV Datenbankverzeichnis
+unapi: "http://gsoapiwww.gbv.de/unapi"
 proxy:
     - 127.0.0.1
     - 193.174.240.0/24

@@ -1,4 +1,9 @@
-﻿[% INCLUDE header.html title=uri.dcterms_title %]
+﻿[% INCLUDE header.html 
+    title=uri.dcterms_title('@de')
+    type='http://schema.org/Dataset' %]
+   [% IF uri.dcterms_title('@en') %]
+     <p class="lead" xml:lang="en" itemprop="name">[% uri.dcterms_title('@en') %]</p> 
+   [% END %]
    [% SET dbs = uri %] 
    [% IF dbs %]
     [% IF dbs.dc_description %]
@@ -26,7 +31,7 @@
         <p><a href="$dbs.foaf_isPrimaryTopicOf.href">Weitere Informationen zur Datenbank</a></p>
     [% END %]
     [% org = dbs.rev('gbv:opac'); IF org %]
-      <p>
+      <p itemprop="author" itemtype="Organization">
         Geh&ouml;rt zu: <a href="$org.href">$org</a>
         <img src="$base/img/home.png" title="zugehörige Einrichtung" border="0">
       </p>

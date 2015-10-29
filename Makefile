@@ -27,6 +27,9 @@ ifeq ($(PANDOC),)
   PANDOC = $(error pandoc is required but not installed)
 endif
 
+docs: README.md
+	cd doc; make dbinfo.pdf
+
 manpage: debian/$(PACKAGE).1
 debian/$(PACKAGE).1: README.md $(CONTROL)
 	@grep -v '^\[!' $< | $(PANDOC) -s -t man -o $@ \

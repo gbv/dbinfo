@@ -50,7 +50,7 @@ Relevant source code is located in
     * `install` - lists which files to install
 * `cpanfile` - lists required Perl modules
 * `public/` - static HTML/CSS/JS/... files
-* `doc/` - additional documentation
+* `doc/` - Makefile to build documentation from `README.md`
 * `etc/dbinfo.yml` - config file (only installed with first installation) 
 
 ## Tests

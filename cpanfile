@@ -6,6 +6,8 @@ requires 'Plack::Middleware::Log::Contextual';
 requires 'Plack::Middleware::XForwardedFor';
 requires 'Plack::Middleware::Negotiate', '0.06';
 
+requires 'YAML';
+
 requires 'LWP::Simple'; # ...
 
 requires 'RDF::Flow', '>= 0.175';
