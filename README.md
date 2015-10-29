@@ -93,6 +93,10 @@ Restart is required after changes.
 
 Log files are located at `/var/log/dbinfo/`.
 
+# CHANGES
+
+see debian/changelog
+
 # SEE ALSO
 
 The source code of dbinfo is managed in a public git repository at

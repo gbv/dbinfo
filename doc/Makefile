@@ -1,7 +1,9 @@
 TITLE   = GBV Datenbankverzeichnis
 AUTHOR  = Jakob Voß, Verbundzentrale des GBV
 NAME    = dbinfo
-SOURCE  = ../README.md
+
+dbinfo.md: ../README.md ../debian/changelog
+	sed -r 's!^see debian/changelog!./changelog2markdown!e' ../README.md > $@
 
 include vzgspec/Makefile
 

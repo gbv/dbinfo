@@ -1,11 +1,11 @@
-dbinfo (0.7.0ubuntu1) UNRELEASED; urgency=medium
+dbinfo (0.7.1) UNRELEASED; urgency=medium
 
   * new JSON-LD based RDF serialization
   * add English titles
   * include public homepage (url field)
   * extended documentation
 
- -- Jakob Voß <jakob.voss@gbv.de>  Thu, 29 Oct 2015 09:48:54 +0100
+ -- Jakob Voß <jakob.voss@gbv.de>  Thu, 29 Oct 2015 11:30:00 +0000
 
 dbinfo (0.7.0) unstable; urgency=medium
 

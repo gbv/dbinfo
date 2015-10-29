@@ -11,3 +11,4 @@ debian/*/
 
 logs/
 doc/dbinfo.*
+!doc/dbinfo.pdf

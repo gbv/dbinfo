@@ -31,13 +31,64 @@ sudo\ dpkg\ \-i\ dbinfo_X.Y.Z_amd64.deb\ \ \ \ #\ change\ X.Y.Z
 .PP
 After installation the service is available at localhost on port 6006.
 Better put the service behind a reverse proxy to enable SSL and nice
-URLs!
+URLs! In the following a reverse proxy mapping
+<http://uri.gbv.de/database/> to <http://localhost:6006/> is assumed.
 .SH USAGE
 .PP
 GBV Datenbankverzeichnis provides a Linked Open Data endpoint with RDF
 data in several serialization forms.
+Serialization form can be controlled via content negotiation or via
+query parameter \f[C]format\f[] (set to \f[C]ttl\f[], \f[C]json\f[],
+\f[C]rdfxml\f[], \f[C]jsonld\f[] for RDF or \f[C]html\f[] for HTML by
+default).
+The RDF vocabularies are documented at a page accessible via
+<http://uri.gbv.de/database/ontology.html>.
+.PP
+A convenient data format for reuse outside of RDF applications is
+JSON\-LD:
+.IP
+.nf
+\f[C]
+curl\ http://uri.gbv.de/database/amb?format=jsonld
+\f[]
+.fi
+.IP
+.nf
+\f[C]
+{
+\ \ \ "\@context"\ :\ "http://uri.gbv.de/database/dbinfo.jsonld",
+\ \ \ "uri"\ :\ "http://uri.gbv.de/database/amb",
+\ \ \ "title"\ :\ {
+\ \ \ \ \ \ "de"\ :\ "Katalog\ der\ meereswissenschaftlichen\ Bibliotheken\ Deutschlands",
+\ \ \ \ \ \ "en"\ :\ "German\ Association\ of\ Marine\ Science\ Libraries\ and\ Information\ Centers\ Catalogue"
+\ \ \ },
+\ \ \ "dbkey"\ :\ "amb",
+\ \ \ "url":\ "https://gso.gbv.de/DB=2.910/",
+\ \ \ "srubase"\ :\ "http://sru.gbv.de/amb",
+\ \ \ "picabase"\ :\ "http://gsoapi.gbv.de/DB=2.910/",
+\ \ \ "openaccess"\ :\ false
+}
+\f[]
+.fi
+.PP
 The service further provides an OpenSearch Suggest AI at
-\f[C]/api/dbkey\f[] to query database prefixes.
+\f[C]/api/dbkey\f[] to query database prefixes:
+.IP
+.nf
+\f[C]
+curl\ http://uri.gbv.de/database/api/dbkey?id=opac\-de\-91
+\f[]
+.fi
+.IP
+.nf
+\f[C]
+[\ "opac\-de\-91",
+\ \ ["opac\-de\-916"],
+\ \ ["Online\-Katalog\ der\ Ostfalia\ Hochschule\ für\ angewandte\ Wissenschaften"],
+\ \ ["http://uri.gbv.de/database/opac\-de\-916"]
+]
+\f[]
+.fi
 .SH ADMINISTRATION
 .SS Configuration
 .PP
@@ -49,11 +100,21 @@ configuration in form of simple key\-values pairs:
 \f[C]WORKERS\f[] \- number of parallel connections (required, 5 by
 default).
 .PP
-Additional configuration is placed in \f[C]/etc/dbinfo\f[].
+Additional configuration is placed in \f[C]/etc/dbinfo/config.yml\f[]
+with the following fields:
+.IP \[bu] 2
+\f[C]unapi\f[] \- base URL of unAPI config server to get databases from
+.IP \[bu] 2
+\f[C]proxy\f[] \- optional list of IPs or IP ranges the service can run
+behind (for logging the proxied request IPs instead of proxy IP).
+.PP
 Restart is required after changes.
 .SS Logging
 .PP
 Log files are located at \f[C]/var/log/dbinfo/\f[].
+.SH CHANGES
+.PP
+see debian/changelog
 .SH SEE ALSO
 .PP
 The source code of dbinfo is managed in a public git repository at
