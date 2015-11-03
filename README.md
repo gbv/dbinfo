@@ -86,8 +86,16 @@ the following fields:
 * `unapi` - base URL of unAPI config server to get databases from
 * `proxy` - optional list of IPs or IP ranges the service can run behind
   (for logging the proxied request IPs instead of proxy IP).
+* `base` - base URI (`http://uri.gbv.de/database/` by default)
+* `stats` - directory to store statistics in (`/etc/dbinfo/stats` by default).
 
 Restart is required after changes.
+
+The script `/etc/dbinfo/diagram.r` is used to generate diagrams. It can be
+adjusted locally, so updates to this script must be applied manually.
+
+Statistics are stored in `/etc/dbinfo/stats` in a CSV file for each database.
+This directory should be backed up to retain history data.
 
 ## Logging
 

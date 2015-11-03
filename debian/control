@@ -16,5 +16,6 @@ Depends: perl-base (>= 5.14.1),
     libchi-perl,
     libtry-tiny-perl,
     libtemplate-perl,
-    liblog-contextual-perl
+    liblog-contextual-perl,
+    r-base
 Description: GBV Datenbankverzeichnis

@@ -1,4 +1,11 @@
-dbinfo (0.7.1) UNRELEASED; urgency=medium
+dbinfo (0.8.0) unstable; urgency=medium
+
+  * include creation of diagrams. Update requires manually
+    copying `etc/diagram.r` to `/etc/dbinfo`
+
+ -- Jakob Voß <jakob.voss@gbv.de>  Tue, 03 Nov 2015 14:25:52 +0100
+
+dbinfo (0.7.1) unstable; urgency=medium
 
   * new JSON-LD based RDF serialization
   * add English titles

@@ -1,0 +1,3 @@
+#!/bin/sh
+cd /srv/dbinfo
+./mkstat --all > /var/log/dbinfo/mkstat.log

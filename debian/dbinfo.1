@@ -107,8 +107,22 @@ with the following fields:
 .IP \[bu] 2
 \f[C]proxy\f[] \- optional list of IPs or IP ranges the service can run
 behind (for logging the proxied request IPs instead of proxy IP).
+.IP \[bu] 2
+\f[C]base\f[] \- base URI (\f[C]http://uri.gbv.de/database/\f[] by
+default)
+.IP \[bu] 2
+\f[C]stats\f[] \- directory to store statistics in
+(\f[C]/etc/dbinfo/stats\f[] by default).
 .PP
 Restart is required after changes.
+.PP
+The script \f[C]/etc/dbinfo/diagram.r\f[] is used to generate diagrams.
+It can be adjusted locally, so updates to this script must be applied
+manually.
+.PP
+Statistics are stored in \f[C]/etc/dbinfo/stats\f[] in a CSV file for
+each database.
+This directory should be backed up to retain history data.
 .SS Logging
 .PP
 Log files are located at \f[C]/var/log/dbinfo/\f[].

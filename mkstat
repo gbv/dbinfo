@@ -1,0 +1,77 @@
+#!/usr/bin/env perl
+use v5.14;
+use lib './lib';
+
+use App::DBInfo::Stats;
+use App::DBInfo::Source;
+use App::DBInfo;
+
+my $mode = (@ARGV and $ARGV[0] =~ /^(count|diagram)$/) ? shift @ARGV : 'count-and-diagram';
+if ( !@ARGV ) {
+    print $_ for <DATA>;
+    exit 1;
+}
+
+my $dbinfo = App::DBInfo->new;
+
+my $statsdir = $dbinfo->{config}{stats};
+mkdir $statsdir unless -d $statsdir;
+
+my $delay = 20; # seconds
+
+sub count {
+    my $dbkey = shift;
+    my $csv = "$statsdir/$dbkey.csv";
+
+    my $uri = "http://uri.gbv.de/database/$dbkey";
+    my $rdf = $dbinfo->{source}->retrieve_rdf({ 'rdflow.uri' => $uri });
+    my $picabase = RDF::Lazy->new($rdf)->uri("<$uri>")->gbv_picabase
+        or return;
+
+    my $stat = App::DBInfo::Stats->new( picabase => $picabase );
+    $stat->count;
+
+    open (my $fh, ">>", $csv) or die "Failed to open output file $csv\n";
+    say $fh $stat->time, ";", $stat->extent;
+    close $fh;
+
+    say "$csv (".$stat->extent." at ".$stat->time.")";
+}
+
+sub diagram {
+    my $dbkey = shift;
+    my $csv = "$statsdir/$dbkey.csv";
+    my $png = "$statsdir/$dbkey.png";
+    -f $csv or return;
+    system( 'Rscript', $dbinfo->{etcdir} . '/diagram.r', $csv, $png );
+}
+
+sub mkstat {
+    my $dbkey = shift;
+    if ($mode =~ /count/) {
+        count($dbkey);
+        if (@ARGV) {
+            sleep $delay;
+        }
+    }
+    if ($mode =~ /diagram/) {
+        diagram($dbkey);
+    }
+}
+
+if (@ARGV eq 1 and $ARGV[0] eq '--all') {
+    my $source = $dbinfo->{source};
+    $source->load('databases');
+    foreach my $dbkey (keys %{$source->{databases}}) {
+        mkstat($dbkey);
+    }
+} else {
+    while (my $dbkey = shift @ARGV) {
+        mkstat($dbkey);
+    }
+}
+
+__DATA__
+Usage: mkstat [ count | diagram ]  DBKEY | --all
+
+Count number of records (count) in a database or create a diagram.

@@ -1,8 +1,6 @@
 package App::DBInfo;
 use v5.14;
 
-#ABSTRACT: Linked Data endpoint for http://uri.gbv.de/database
-
 use Log::Contextual::Easy::Default;
 
 # Required TemplateToolkit plugins
@@ -30,18 +28,18 @@ use App::DBInfo::Source;
 
 use Plack::Builder;
 
-use parent 'Plack::Component', 'Exporter';
-use Plack::Util::Accessor qw(source base);
-
 use CHI;
 use Plack::Middleware::Negotiate;
 use Encode qw(encode); 
 
-our $VERSION="0.7.0";
+use List::Util qw(first);
+use YAML ();
+
+our $VERSION="0.8.0";
 
 my $NEGOTIATE = Plack::Middleware::Negotiate->new(
     parameter => 'format',
-    extension => 0,
+    extension => 1,
     formats => {
         nt      => { type => 'text/plain' },
         rdf     => { type => 'application/rdf+xml' },
@@ -56,28 +54,38 @@ my $NEGOTIATE = Plack::Middleware::Negotiate->new(
     }
 );
 
+sub new {
+    my $self = bless { }, shift;
 
-sub prepare_app {
-    my $self = shift;
-    return if $self->{app};
+    # load config file and set default values
+    $self->{etcdir} = first { -e "$_/config.yml" } '/etc/dbinfo', 'etc';
+    $self->{config} = YAML::LoadFile( $self->{etcdir} . "/config.yml");
 
-    $self->base('http://uri.gbv.de/database/'); 
+    $self->{config}{base} //= 'http://uri.gbv.de/database/';
+    $self->{config}{stats} //= $self->{etcdir} . "/stats";
 
     # TODO: get rid of RDF::Flow
-    my $gbv_dbinfo = App::DBInfo::Source->new;
-    $self->source( 
-        RDF::Flow::Cached->new(
-            $gbv_dbinfo,
+    $self->{source}    = App::DBInfo::Source->new;
+    $self->{rdfsource} = RDF::Flow::Cached->new(
+            $self->{source},
             CHI->new( driver => 'Memory', global => 1, expires_in => '1 hour' )
-        )
-    );
+        );
 
     $self->{app} = builder {
 
-        enable 'Static', 
-            root => 'public',
-            path => qr{\.(css|png|gif|js|ico|jsonld)$};
+        enable_if { $self->{config}{proxy} } 'Plack::Middleware::XForwardedFor',
+            trust => $self->{config}{proxy};
 
+        enable 'Static', 
+            root         => $self->{config}{stats},
+            path         => qr{\.(png)$},
+            pass_through => 1;
+
+        enable 'Static', 
+            root         => 'public',
+            path         => qr{\.(css|png|gif|js|ico|jsonld)$},
+            pass_through => 0;
+            
         # cache everything else for 10 seconds. TODO: set cache time
         enable 'Cached',
                 cache => CHI->new( 
@@ -89,7 +97,7 @@ sub prepare_app {
 
         mount '/api/dbkey' => sub {
             my $id = Plack::Request->new($_[0])->param('id') // '';
-            my $result = $gbv_dbinfo->suggest_dbkey( $id );
+            my $result = $self->{source}->suggest_dbkey( $id );
             my $json = JSON->new->encode( $result );
             return [ 200, [ "Content-Type" => "text/javascript" ], [ $json ] ];
         };
@@ -99,11 +107,13 @@ sub prepare_app {
                 sub { $self->core(@_) }
             );
     };
+
+    return $self;
 }
 
-sub call { 
+sub to_app {
     my $self = shift;
-    $self->{app}->(@_);
+    return sub { $self->{app}->(@_) }
 }
 
 sub core {
@@ -111,7 +121,7 @@ sub core {
     my $req = Plack::Request->new($env);
 
     # construct request URI
-    my $base = defined $self->base ? $self->base : $req->base;
+    my $base = $self->{config}{base} || $req->base;
 
     my $path = $req->path;
     $path =~ s/^\///;
@@ -119,7 +129,7 @@ sub core {
 
     # retrieve RDF
     $env->{'rdflow.uri'} = $uri;
-    my $rdf = $self->source->retrieve($env);
+    my $rdf = $self->{rdfsource}->retrieve($env);
 
     my $format = $env->{'negotiate.format'} // 'html';
 
@@ -168,7 +178,7 @@ sub core {
 
             $env->{'tt.path'} = '/jsonld.json';
 
-        } elsif ( $uri eq $self->base ) {
+        } elsif ( $uri eq $self->{config}{base} ) {
             # ...
         } elsif ( $lazy->resource($uri)->type('skos:Concept') ) {
             # show database group/prefix
@@ -196,6 +206,7 @@ sub core {
         404 => '404.html', 
         500 => '500.html'
     )->to_app;
+
     return $app->($env);
 }
 

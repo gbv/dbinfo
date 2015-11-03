@@ -227,20 +227,6 @@ sub db2rdf {
     }
 
 =head1 COUNT
-        my $counturl = $url.'XML=Y/CMD?ACT=SRCHA&IKT=1016&TRM=ppn[%23]%3F';
-        #log_trace { $counturl };
-        my $count = $CACHE->get( $url );
-        unless ( defined $count ) {
-            $count = try {
-                my $xml = ''; # get($counturl); # TODO: put in another source and cache from file
-                if ( $xml =~ /hits=\"([0-9]+)\"/m ) {
-                    $1;
-                } else {
-                    '?';
-                }
-            } catch { '?' };
-            $CACHE->set( $url, $count );
-        }
         if ( $count ne '?' ) {
 
 #            my $statItem = blank(md5_hex($counturl));
@@ -320,6 +306,7 @@ sub load {
 sub load_part {
     my ($self, $name) = @_;
 
+    # TODO: configure caching directory
     $self->{tempdir} ||= tempdir();
 
     my $url  = $CONFIG->{unapi} . "/$name";

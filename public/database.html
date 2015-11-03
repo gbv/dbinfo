@@ -12,7 +12,7 @@
     <p>
       <a href="$dbs.foaf_homepage.href">$dbs.foaf_homepage</a>
       [% IF dbs.gbv_picabase %] (PICA-Datenbank)
-        <form action="[% dbs.gbv_picabase %]CMD" method="get" style="display:inline">
+        <form action="[% dbs.foaf_homepage.href %]CMD" method="get" style="display:inline">
           <input type="hidden" name="ACT" value="SRCHA">
           <input type="hidden" name="IKT" value="1016">
           <input type="text" name="TRM" size="40">
@@ -71,7 +71,7 @@
     <p>Umfang: [% dbs.dcterms_extent | format_number %] Datensätze (kann ggf. abweichen)</p>
    [% END %]
     [% IF dbs.gbv_dbkey %]
-    <img src="http://uri.gbv.de/stats/database/img/[% dbs.gbv_dbkey %].png" title="Anzahl der Datensätze" />
+    <img src="$base/[%dbs.gbv_dbkey%].png" title="Anzahl der Datensätze" />
     [% END %]
    </div>
    <br style="clear:both;" />

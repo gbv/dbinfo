@@ -1,4 +1,5 @@
 app.psgi        srv/dbinfo
+mkstat          srv/dbinfo
 lib/*           srv/dbinfo/lib
 local/*         srv/dbinfo/local
 public/*        srv/dbinfo/public
