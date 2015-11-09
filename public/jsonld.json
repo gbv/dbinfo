@@ -27,7 +27,9 @@
         SET org = dbs.rev('gbv:opac');
         IF org; data.opacOf = org.str; END;
 
-        IF dbs.dcterms_extent; data.count = 1*dbs.dcterms_extent; END;
+        IF dbs.dcterms_extent; 
+            data.count = 1*dbs.dcterms_extent.str; 
+        END;
     END;
 
     IF dbs.foaf_homepage; data.url = dbs.foaf_homepage.str; END;

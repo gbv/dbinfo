@@ -23,13 +23,6 @@ use YAML;
 use CHI;
 our $CACHE = CHI->new( driver => 'Memory', global => 1, expires_in => '1 day' );
 
-my $CONFIG = first { -e $_ } '/etc/dbinfo/config.yml','etc/config.yml';
-$CONFIG = $CONFIG ? YAML::LoadFile($CONFIG) : { };
-
-die "Missing unapi URL in config file\n" unless $CONFIG->{unapi};
-$CONFIG->{unapi} =~ s{/$}{};
-
-
 use RDF::NS;
 use constant NS => RDF::NS->new('20130930');
 
@@ -226,9 +219,17 @@ sub db2rdf {
         $url ||= $picabase;
     }
 
-=head1 COUNT
-        if ( $count ne '?' ) {
-
+    my $csv = $self->{config}{stats}."/$key.csv";
+    if (-f $csv) {
+        my $count;
+        open my $fh, "<", $csv;
+        readline($fh); # header
+        while (<$fh>) {
+            next unless eof;
+            chomp;
+            (undef, $count) = split ';', $_;
+        }
+        if ( defined $count ) {
 #            my $statItem = blank(md5_hex($counturl));
 #            $model->add_statement(statement(
 #                $dburi, NS->uri('void:statItem'), $statItem
@@ -239,15 +240,11 @@ sub db2rdf {
 #            $model->add_statement(statement(
 #                $statItem, NS->uri('rdf:value'), literal($count) # TODO: xs:int
 #            ));
-        
-            push @$triples, 
-                [ $dburi, NS->uri('dcterms:extent'), literal($count) ]; # TODO: xs:int
-
-            log_info { "Got current number of titles: $count" };
-        } else {
-            log_error { 'Failed to get number of titles: '.$@ };
+            push @$triples, [ $dburi, NS->uri('dcterms:extent'), 
+                literal($count, undef, NS->uri('xs:int')) 
+            ];
         }
-=cut
+    }
 
     push @$triples, [ $dburi, NS->uri('foaf:homepage'), iri($url) ] if $url;
 
@@ -309,7 +306,7 @@ sub load_part {
     # TODO: configure caching directory
     $self->{tempdir} ||= tempdir();
 
-    my $url  = $CONFIG->{unapi} . "/$name";
+    my $url  = $self->{config}{unapi} . "/$name";
     my $file = $self->{tempdir}.$name;
         
     my $mirror = mirror($url, $file);

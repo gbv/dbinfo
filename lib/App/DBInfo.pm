@@ -64,8 +64,14 @@ sub new {
     $self->{config}{base} //= 'http://uri.gbv.de/database/';
     $self->{config}{stats} //= $self->{etcdir} . "/stats";
 
-    # TODO: get rid of RDF::Flow
+    die "Missing unapi URL in config file\n" unless $self->{config}{unapi};
+    $self->{config}{unapi} =~ s{/$}{};
+
+    # TODO: get rid of RDF::Flow, include App::DBInfo::Source here
     $self->{source}    = App::DBInfo::Source->new;
+    # TODO: avoid hack
+    $self->{source}{config} = $self->{config};
+
     $self->{rdfsource} = RDF::Flow::Cached->new(
             $self->{source},
             CHI->new( driver => 'Memory', global => 1, expires_in => '1 hour' )

@@ -67,12 +67,15 @@
    [% END %]
    [% IF dbs.dcterms_extent %]
     [% USE Number.Format %]
-    <h2>Inhalt</h2>
-    <p>Umfang: [% dbs.dcterms_extent | format_number %] Datensätze (kann ggf. abweichen)</p>
-   [% END %]
-    [% IF dbs.gbv_dbkey %]
+    <h2>Umfang</h2>
+    <p>
+       Die Datenbank enthält (je nach Zählung) etwa
+       <a href="$base/[%dbs.gbv_dbkey%].csv" title="Statistik als CSV">[% 
+           dbs.dcterms_extent | format_number %]</a> 
+       Datensätze.
+    </p>
     <img src="$base/[%dbs.gbv_dbkey%].png" title="Anzahl der Datensätze" />
-    [% END %]
+   [% END %]
    </div>
    <br style="clear:both;" />
 [% INCLUDE footer.html %]

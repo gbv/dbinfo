@@ -4,7 +4,6 @@ use lib './local/lib/perl5';
 use lib './lib';
 
 use App::DBInfo::Stats;
-use App::DBInfo::Source;
 use App::DBInfo;
 
 my $mode = (@ARGV and $ARGV[0] =~ /^(count|diagram)$/) ? shift @ARGV : 'count-and-diagram';

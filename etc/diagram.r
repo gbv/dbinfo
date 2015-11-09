@@ -26,7 +26,7 @@ options(scipen=1)
 
 png(pngfile)
 
-par(mar=c(4.1,6.1,4.1,2.1))
+par(mar=c(4,6,2,2))
 plot(dbstat, pch=20, ann=F, yaxt="n" )
 
 # Anzahl
