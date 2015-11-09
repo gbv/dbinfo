@@ -1,5 +1,6 @@
 #!/usr/bin/env perl
 use v5.14;
+use lib './local/lib/perl5';
 use lib './lib';
 
 use App::DBInfo::Stats;
@@ -15,7 +16,10 @@ if ( !@ARGV ) {
 my $dbinfo = App::DBInfo->new;
 
 my $statsdir = $dbinfo->{config}{stats};
-mkdir $statsdir unless -d $statsdir;
+unless (-d $statsdir) {
+    require File::Path;
+    File::Path::make_path($statsdir);
+}
 
 my $delay = 20; # seconds
 
