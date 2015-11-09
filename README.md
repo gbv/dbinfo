@@ -92,18 +92,26 @@ the following fields:
 Restart is required after changes.
 
 The script `/etc/dbinfo/diagram.r` is used to generate diagrams. It can be
-adjusted locally, so updates to this script must be applied manually.
+adjusted locally, so updates to this script must be applied manually!
 
-Statistics are stored in `/etc/dbinfo/stats` in a CSV file for each database.
-This directory should be backed up to retain history data.
+## Database Statistics
+
+Database statistics are stored in `/etc/dbinfo/stats` (or in another directory
+specified in configuration) in a CSV file for each database.  This directory
+should be backed up to retain history data. Statistics is updated daily via cronjob
+in `/etc/cron.daily/dbinfo`.
 
 ## Logging
 
-Log files are located at `/var/log/dbinfo/`.
+Log files are located at `/var/log/dbinfo/`:
+
+* `error.log` 
+* `access.log`
+* `mkstat.log`
 
 # CHANGES
 
-see debian/changelog
+See debian/changelog
 
 # SEE ALSO
 

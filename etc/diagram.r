@@ -8,7 +8,7 @@ csvfile <- args[1]
 pngfile <- args[2]
 
 # read statistics
-dbstat <- read.csv( csvfile, sep=';', col.names=c('time','count') )
+dbstat <- read.csv( csvfile, sep=';' )
 
 # convert timestamps to dates
 dbstat$time <- as.POSIXct(dbstat$time)

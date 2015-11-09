@@ -35,7 +35,9 @@ sub count {
     my $stat = App::DBInfo::Stats->new( picabase => $picabase );
     $stat->count;
 
+    my $update = -f $csv;
     open (my $fh, ">>", $csv) or die "Failed to open output file $csv\n";
+    say "time;count" unless $update;
     say $fh $stat->time, ";", $stat->extent;
     close $fh;
 

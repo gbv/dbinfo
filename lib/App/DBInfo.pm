@@ -78,7 +78,7 @@ sub new {
 
         enable 'Static', 
             root         => $self->{config}{stats},
-            path         => qr{\.(png)$},
+            path         => qr{\.(png|csv)$},
             pass_through => 1;
 
         enable 'Static', 

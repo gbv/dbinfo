@@ -51,7 +51,8 @@ Relevant source code is located in
 * `cpanfile` - lists required Perl modules
 * `public/` - static HTML/CSS/JS/... files
 * `doc/` - Makefile to build documentation from `README.md`
-* `etc/dbinfo.yml` - config file (only installed with first installation) 
+* `etc/config.yml` - config file (only installed with first installation) 
+* `etc/diagram.r` - diagram generation script (dito)
 
 ## Tests
 
