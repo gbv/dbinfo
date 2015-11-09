@@ -193,7 +193,9 @@ sub core {
 
     $vars->{error}     = $env->{'rdflow.error'};
     $vars->{timestamp} = $env->{'rdflow.timestamp'};
-    $vars->{cached} = 1 if $env->{'rdflow.cached'};
+    $vars->{cached}    = 1 if $env->{'rdflow.cached'};
+    $vars->{version}   = $VERSION;
+    $vars->{config}    = $self->{config};
 
     $env->{'tt.vars'} = $vars;
 
