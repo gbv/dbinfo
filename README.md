@@ -63,7 +63,8 @@ curl http://uri.gbv.de/database/api/dbkey?id=opac-de-91
 ```
 
 ```json
-[ "opac-de-91",
+[ 
+  "opac-de-91",
   ["opac-de-916"],
   ["Online-Katalog der Ostfalia Hochschule für angewandte Wissenschaften"],
   ["http://uri.gbv.de/database/opac-de-916"]
@@ -111,7 +112,7 @@ Log files are located at `/var/log/dbinfo/`:
 
 # CHANGES
 
-See debian/changelog
+See `debian/changelog`.
 
 # SEE ALSO
 

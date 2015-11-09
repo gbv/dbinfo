@@ -12,7 +12,7 @@ while (<$fh>) {
         $changes = "";
     } elsif (/^\s*--.*>\s+(.+)$/) {
         my $date = Time::Piece->strptime($1, "%a, %d %b %Y %T %z");
-        say "### $version (".$date->strftime("%Y-%m-%d %H:%M").") {.unnumbered}";
+        say "### $version (".$date->strftime("%Y-%m-%d").") {.unnumbered}";
         say $changes;
     } else {        
         s/^..//mg;

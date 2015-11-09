@@ -82,7 +82,8 @@ curl\ http://uri.gbv.de/database/api/dbkey?id=opac\-de\-91
 .IP
 .nf
 \f[C]
-[\ "opac\-de\-91",
+[\ 
+\ \ "opac\-de\-91",
 \ \ ["opac\-de\-916"],
 \ \ ["Online\-Katalog\ der\ Ostfalia\ Hochschule\ für\ angewandte\ Wissenschaften"],
 \ \ ["http://uri.gbv.de/database/opac\-de\-916"]
@@ -118,17 +119,27 @@ Restart is required after changes.
 .PP
 The script \f[C]/etc/dbinfo/diagram.r\f[] is used to generate diagrams.
 It can be adjusted locally, so updates to this script must be applied
-manually.
+manually!
+.SS Database Statistics
 .PP
-Statistics are stored in \f[C]/etc/dbinfo/stats\f[] in a CSV file for
-each database.
+Database statistics are stored in \f[C]/etc/dbinfo/stats\f[] (or in
+another directory specified in configuration) in a CSV file for each
+database.
 This directory should be backed up to retain history data.
+Statistics is updated daily via cronjob in
+\f[C]/etc/cron.daily/dbinfo\f[].
 .SS Logging
 .PP
-Log files are located at \f[C]/var/log/dbinfo/\f[].
+Log files are located at \f[C]/var/log/dbinfo/\f[]:
+.IP \[bu] 2
+\f[C]error.log\f[]
+.IP \[bu] 2
+\f[C]access.log\f[]
+.IP \[bu] 2
+\f[C]mkstat.log\f[]
 .SH CHANGES
 .PP
-see debian/changelog
+See \f[C]debian/changelog\f[].
 .SH SEE ALSO
 .PP
 The source code of dbinfo is managed in a public git repository at

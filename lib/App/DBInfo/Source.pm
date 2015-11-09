@@ -225,9 +225,9 @@ sub db2rdf {
         open my $fh, "<", $csv;
         readline($fh); # header
         while (<$fh>) {
-            next unless eof;
             chomp;
-            (undef, $count) = split ';', $_;
+            my (undef, $tmp) = split ';', $_;
+            $count = $tmp if $tmp ne '';
         }
         if ( defined $count ) {
 #            my $statItem = blank(md5_hex($counturl));
