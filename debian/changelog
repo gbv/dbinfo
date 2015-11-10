@@ -1,3 +1,10 @@
+dbinfo (0.8.2) unstable; urgency=medium
+
+  * fixed Debian init script
+  * add JSKOS output (JSON-LD) for database groups 
+
+ -- Jakob Voß <jakob.voss@gbv.de>  Tue, 10 Nov 2015 16:42:59 +0100
+
 dbinfo (0.8.1) unstable; urgency=medium
 
   * show statistics only if available 

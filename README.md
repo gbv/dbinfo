@@ -55,6 +55,8 @@ curl http://uri.gbv.de/database/amb?format=jsonld
 }
 ```
 
+Databases are grouped by prefixes which can be retrieved as JSKOS concepts.
+
 The service further provides an OpenSearch Suggest AI at `/api/dbkey` to query
 database prefixes:
 

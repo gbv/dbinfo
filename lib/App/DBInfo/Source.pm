@@ -151,7 +151,8 @@ sub prefixonly2rdf {
 
     push @$triples,
         [ iri($uri), NS->uri('rdf:type'), NS->uri('skos:Concept') ],
-        [ iri($uri), NS->uri('skos:prefLabel'), literal($title) ];
+        [ iri($uri), NS->uri('skos:prefLabel'), literal($title, 'de') ];
+        # TODO: English title
 
     return 1;
 }

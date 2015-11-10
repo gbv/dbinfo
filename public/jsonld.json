@@ -3,18 +3,46 @@
     USE JSON.Escape( pretty => 1 ); 
     SET dbs = uri;
 
-    data = {
-        "@context" => "http://uri.gbv.de/database/dbinfo.jsonld",
-        uri   => uri.str,
-        title => {
-            de => uri.dcterms_title('@de').str
-        }
-    };
-    IF dbs.gbv_dbkey; data.dbkey = dbs.gbv_dbkey.str; END;
-    SET en = uri.dcterms_title('@en').str;
-    IF en; data.title.en = en; END;
-    
-    IF NOT dbs.type('skos:Concept');
+    IF dbs.type('skos:Concept');
+        data = {
+            "@context" => "http://gbv.github.io/jskos/context.json",
+            uri => uri.str,
+            type => ["http://www.w3.org/2004/02/skos/core#Concept"],
+            prefLabel => {
+                de => uri.skos_prefLabel('@de').str
+            },
+            inScheme => ["http://uri.gbv.de/database/"],
+            subjectOf => [],
+        };    
+        SET en = uri.skos_prefLabel('@en').str;
+        IF en; data.prefLabel.en = en; END;
+
+        FOREACH s IN dbs.revs('dc11:subject');
+            data.subjectOf.push(s.str);
+        END;
+    ELSIF dbs.type('skos:ConceptScheme');
+        data = {
+            "@context" => "http://gbv.github.io/jskos/context.json",
+            uri => uri.str,
+            type => ["http://www.w3.org/2004/02/skos/core#ConceptScheme"],
+            prefLabel => {
+                de => 'GBV Datenbankverzeichnis',
+                en => 'GBV database directory',
+            }
+        };
+    ELSE;
+        data = {
+            "@context" => "http://uri.gbv.de/database/dbinfo.jsonld",
+            uri   => uri.str,
+            title => {
+                de => uri.dcterms_title('@de').str
+            }
+        };
+        SET en = uri.dcterms_title('@en').str;
+        IF en; data.title.en = en; END;
+
+        IF dbs.gbv_dbkey; data.dbkey = dbs.gbv_dbkey.str; END;
+
         IF dbs.gbv_picabase; data.picabase = dbs.gbv_picabase.str; END;
         IF dbs.gbv_srubase; data.srubase = dbs.gbv_srubase.str; END;
 
@@ -30,10 +58,10 @@
         IF dbs.dcterms_extent; 
             data.count = 1*dbs.dcterms_extent.str; 
         END;
-    END;
 
-    IF dbs.foaf_homepage; data.url = dbs.foaf_homepage.str; END;
-    IF dbs.foaf_isPrimaryTopicOf; data.infourl = dbs.foaf_isPrimaryTopicOf.str; END;
+        IF dbs.foaf_homepage; data.url = dbs.foaf_homepage.str; END;
+        IF dbs.foaf_isPrimaryTopicOf; data.infourl = dbs.foaf_isPrimaryTopicOf.str; END;
+    END;
 
     data.json
 %]
