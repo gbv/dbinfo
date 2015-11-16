@@ -6,10 +6,10 @@
 }
 .navbar-inverse .navbar-brand {
   color: #fff;
-  font-size: 22px;
   padding-bottom: 0px;
+  line-height: 64px;
+  font-size: 30px;
 }
-
 .error {
   padding: 5px 0px;
   color: red;
@@ -22,10 +22,6 @@ dt.inline:after {
   content: ":";
 }
 dd { padding-bottom: 0.4em; }
-
-#map_canvas {
-  border: 1px solid #999;
-}
 
 footer {
   border-top: 12px solid #6791C9;
