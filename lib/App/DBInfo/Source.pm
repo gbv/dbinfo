@@ -105,11 +105,13 @@ sub retrieve_base {
 
     my $scheme = iri('http://uri.gbv.de/database/');
     push @triples, [ $scheme, NS->uri('rdf:type'), NS->uri('skos:ConceptScheme') ];
+
+    # prefixes
     foreach my $prefix (keys %{ $self->{prefixes} }) {
-        if ( $self->prefixonly2rdf( $prefix, \@triples ) ) {
+        #if ( $self->prefixonly2rdf( $prefix, \@triples ) ) {
             my $uri = iri("http://uri.gbv.de/database/$prefix");
             push @triples, [ $scheme, NS->uri('skos:hasTopConcept'), $uri ];
-        }
+        #}
     }
 
     # databases without prefix

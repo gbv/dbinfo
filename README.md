@@ -27,13 +27,37 @@ following a reverse proxy mapping <http://uri.gbv.de/database/> to
 
 # USAGE
 
-GBV Datenbankverzeichnis provides a Linked Open Data endpoint with RDF data in
-several serialization forms. Serialization form can be controlled via content
-negotiation or via query parameter `format` (set to `ttl`, `json`, `rdfxml`,
-`jsonld` for RDF or `html` for HTML by default). The RDF vocabularies are
-documented at a page accessible via <http://uri.gbv.de/database/ontology.html>.
+GBV Datenbankverzeichnis provides an overview of databases used by or provided
+at VZG. Information about databases can be retrieved in RDF, JSON, and CSV.
 
-A convenient data format for reuse outside of RDF applications is JSON-LD:
+## Database organization
+
+Each database is identified by an URI with prefix <http://uri.gbv.de/database/>
+followed by a database key (**dbkey**). Each dbkey consists of lowercase
+letters (`a-z`), digits (`0-9`), and/or minus (`-`). The part before the first
+minus, if given, identifies a database group. For instance:
+
+* <http://uri.gbv.de/database/gvk>: dbkey `gvk`
+* <http://uri.gbv.de/database/opac>: database group `opac`
+* <http://uri.gbv.de/database/opac-de-hil2>: database `opac-de-hil2` 
+  in group `opac`
+
+Information about databases groups is encoded in SKOS and can be retrieved in
+JSKOS (`format=jsold`). A list of all database groups can be retrieved at the
+base URL:
+
+* <http://uri.gbv.de/database/?format=jsonld>
+* <http://uri.gbv.de/database/opac?format=jsonld>
+
+## Database metadata
+
+Information about databases can be retrieved in several RDF serialization forms
+selecetd by HTTP content negotiation or via query parameter `format` (set to
+`ttl`, `json`, `rdfxml`, `jsonld` for RDF, or `html` for HTML as default). The
+RDF vocabularies are documented at a page accessible via
+<http://uri.gbv.de/database/ontology.html>.  A convenient data format for reuse
+outside of RDF applications is JSON-LD, specified at
+<http://uri.gbv.de/database/dbinfo.jsonld>:
 
 ```bash
 curl http://uri.gbv.de/database/amb?format=jsonld
@@ -48,14 +72,14 @@ curl http://uri.gbv.de/database/amb?format=jsonld
       "en" : "German Association of Marine Science Libraries and Information Centers Catalogue"
    },
    "dbkey" : "amb",
-   "url": "https://gso.gbv.de/DB=2.910/",
-   "srubase" : "http://sru.gbv.de/amb",
-   "picabase" : "http://gsoapi.gbv.de/DB=2.910/",
-   "openaccess" : false
-}
+   ...
 ```
 
-Databases are grouped by prefixes which can be retrieved as JSKOS concepts.
+## Database statistics
+
+ppend `.csv` to the Database URI to get statistics in CSV format.
+
+## Suggest service
 
 The service further provides an OpenSearch Suggest AI at `/api/dbkey` to query
 database prefixes:
@@ -65,12 +89,10 @@ curl http://uri.gbv.de/database/api/dbkey?id=opac-de-91
 ```
 
 ```json
-[ 
-  "opac-de-91",
+[ "opac-de-91",
   ["opac-de-916"],
   ["Online-Katalog der Ostfalia Hochschule für angewandte Wissenschaften"],
-  ["http://uri.gbv.de/database/opac-de-916"]
-]
+  ["http://uri.gbv.de/database/opac-de-916"] ]
 ```
 
 # ADMINISTRATION

@@ -28,8 +28,12 @@
             prefLabel => {
                 de => 'GBV Datenbankverzeichnis',
                 en => 'GBV database directory',
-            }
+            },
+            topConcepts => []
         };
+        FOREACH s IN dbs.skos_hasTopConcept_;
+            data.topConcepts.push(s.str);
+        END;
     ELSE;
         data = {
             "@context" => "http://uri.gbv.de/database/dbinfo.jsonld",
