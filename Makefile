@@ -32,8 +32,13 @@ docs: README.md manpage
 
 manpage: debian/$(PACKAGE).1
 debian/$(PACKAGE).1: README.md $(CONTROL)
-	@grep -v '^\[!' $< | $(PANDOC) -s -t man -o $@ \
-		-M title="$(shell echo $(PACKAGE) | tr a-z A-Z)(1) Manual" -o $@
+	@echo "%$(PACKAGE)(1)" Manual | tr a-z A-Z > tmp.md
+	@echo "# NAME" >> tmp.md
+	@echo "dbinfo - GBV Datenbankverzeichnis" >> tmp.md
+	@echo >> tmp.md
+	@grep -v '^\[!' $< >> tmp.md
+	@cat tmp.md | $(PANDOC) -s -t man -o $@
+	@rm tmp.md
 
 # build Debian package
 package: manpage version tests

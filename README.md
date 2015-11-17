@@ -1,7 +1,3 @@
-# NAME
-
-dbinfo - GBV Datenbankverzeichnis
-
 # SYNOPSIS
 
 The application is automatically started as service, listening on port 6006.
