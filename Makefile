@@ -47,9 +47,9 @@ package: manpage version tests
 
 # install required toolchain and Debian packages
 dependencies:
-	apt-get install fakeroot dpkg-dev debhelper
-	apt-get install pandoc libghc-citeproc-hs-data 
-	apt-get install $(DEPENDS)
+	apt-get -y install fakeroot dpkg-dev debhelper
+	apt-get -y install pandoc libghc-citeproc-hs-data 
+	apt-get -y install $(DEPENDS)
 
 # install required Perl packages
 local: cpanfile
