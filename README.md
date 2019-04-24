@@ -109,6 +109,7 @@ the following fields:
   (for logging the proxied request IPs instead of proxy IP).
 * `base` - base URI (`http://uri.gbv.de/database/` by default)
 * `stats` - directory to store statistics in (`/etc/dbinfo/stats` by default).
+* `kxpdbids` - location of a file with PICA database ids that have been migrated to K10plus
 
 Restart is required after changes.
 

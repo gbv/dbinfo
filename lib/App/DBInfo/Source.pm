@@ -1,4 +1,4 @@
-package App::DBInfo::Source; 
+package App::DBInfo::Source;
 use v5.14;
 
 use Log::Contextual::Easy::Default;
@@ -27,7 +27,7 @@ use RDF::NS;
 use constant NS => RDF::NS->new('20130930');
 
 sub retrieve_rdf {
-    my ($self, $env) = @_;
+    my ( $self, $env ) = @_;
     my $uri = $env->{'rdflow.uri'};
 
     log_trace { "retrieve_rdf: $uri" };
@@ -35,14 +35,15 @@ sub retrieve_rdf {
     my $model = RDF::Trine::Model->new;
 
     if ( $uri =~ qr{^http://lobid\.org/organisation/(.+)} ) {
+
         # Infos zur Datenbank einer Einrichtung
-        
+
         my $isil = $1;
         return unless $isil =~ /^[a-z]+-[a-z0-9-]+$/i;
 
         log_info { "retrieve ISIL $isil" };
         try {
-            my $key = 'opac-'.lc($isil);
+            my $key = 'opac-' . lc($isil);
 
             $self->load;
 
@@ -51,15 +52,18 @@ sub retrieve_rdf {
             if (@triples) {
                 my $dburi = $self->db2uri($key);
                 push @triples,
-                    [ iri($uri), NS->uri('gbv:opac'), $dburi ],
-                    [ $dburi, NS->uri('dcterms:creator'), iri($uri) ];
+                  [ iri($uri), NS->uri('gbv:opac'), $dburi ],
+                  [ $dburi, NS->uri('dcterms:creator'), iri($uri) ];
             }
-            add_statements($model, \@triples);
+            add_statements( $model, \@triples );
 
-        } catch {
+        }
+        catch {
             log_error { "Failed to get GBV databases: $_" };
         };
-    } elsif ( $uri =~ qr{^http://uri.gbv.de/database/(.+)} ) {
+    }
+    elsif ( $uri =~ qr{^http://uri.gbv.de/database/(.+)} ) {
+
         # Infos zu einer Datenbank
 
         my $key = $1;
@@ -76,22 +80,25 @@ sub retrieve_rdf {
                 my $prefix = $1;
                 if ( $self->prefixonly2rdf( $prefix, \@triples ) ) {
                     my $prefixuri = "http://uri.gbv.de/database/$prefix";
-                    my $dburi = $self->db2uri($key);
-                    push @triples, [ $dburi, NS->uri('dc:subject'), iri($prefixuri) ];
+                    my $dburi     = $self->db2uri($key);
+                    push @triples,
+                      [ $dburi, NS->uri('dc:subject'), iri($prefixuri) ];
                 }
             }
-        } else {
+        }
+        else {
             # Wenn keine spezielle Datenbank, dann Datenbankgruppe
             $self->prefix2rdf( $key, \@triples );
         }
 
-        add_statements($model, \@triples);
+        add_statements( $model, \@triples );
 
-    } elsif ( $uri eq 'http://uri.gbv.de/database/' ) {
+    }
+    elsif ( $uri eq 'http://uri.gbv.de/database/' ) {
         $model = $self->retrieve_base;
     }
 
-    log_info {"retrieved: $model"};
+    log_info { "retrieved: $model" };
 
     return $model;
 }
@@ -104,46 +111,50 @@ sub retrieve_base {
     my @triples;
 
     my $scheme = iri('http://uri.gbv.de/database/');
-    push @triples, [ $scheme, NS->uri('rdf:type'), NS->uri('skos:ConceptScheme') ];
+    push @triples,
+      [ $scheme, NS->uri('rdf:type'), NS->uri('skos:ConceptScheme') ];
 
     # prefixes
-    foreach my $prefix (keys %{ $self->{prefixes} }) {
+    foreach my $prefix ( keys %{ $self->{prefixes} } ) {
+
         #if ( $self->prefixonly2rdf( $prefix, \@triples ) ) {
-            my $uri = iri("http://uri.gbv.de/database/$prefix");
-            push @triples, [ $scheme, NS->uri('skos:hasTopConcept'), $uri ];
+        my $uri = iri("http://uri.gbv.de/database/$prefix");
+        push @triples, [ $scheme, NS->uri('skos:hasTopConcept'), $uri ];
+
         #}
     }
 
     # databases without prefix
-    foreach my $key (keys %{ $self->{databases} }) {
+    foreach my $key ( keys %{ $self->{databases} } ) {
         next if $key =~ /-/;
         my $db = $self->{databases}->{$key};
-    
+
         my $dburi = $self->db2uri($key);
         push @triples, [ $dburi, NS->uri('dc:subject'), $scheme ];
         $self->db2rdf( $key, \@triples );
     }
 
     my $model = RDF::Trine::Model->new;
-    add_statements($model, \@triples);
+    add_statements( $model, \@triples );
 
     $model;
 }
 
 sub db2uri {
-    my ($self, $key) = @_;
+    my ( $self, $key ) = @_;
     my $db = $self->{databases}->{$key};
 
-    if ($db) {    
+    if ($db) {
         return iri("http://uri.gbv.de/database/$key");
-    } else {
+    }
+    else {
         log_debug { "database $key not found." };
         return;
     }
 }
 
 sub prefixonly2rdf {
-    my ($self, $key, $triples) = @_;
+    my ( $self, $key, $triples ) = @_;
     my $prefix = $self->{prefixes}->{$key} || return;
 
     my $uri = "http://uri.gbv.de/database/$key";
@@ -152,21 +163,22 @@ sub prefixonly2rdf {
     log_debug { "database prefix found for $key: $title" };
 
     push @$triples,
-        [ iri($uri), NS->uri('rdf:type'), NS->uri('skos:Concept') ],
-        [ iri($uri), NS->uri('skos:prefLabel'), literal($title, 'de') ];
-        # TODO: English title
+      [ iri($uri), NS->uri('rdf:type'), NS->uri('skos:Concept') ],
+      [ iri($uri), NS->uri('skos:prefLabel'), literal( $title, 'de' ) ];
+
+    # TODO: English title
 
     return 1;
 }
 
 sub prefix2rdf {
-    my ($self, $key, $triples, @dbkeys) = @_;
+    my ( $self, $key, $triples, @dbkeys ) = @_;
     my $uri = "http://uri.gbv.de/database/$key";
 
     prefixonly2rdf( $self, $key, $triples ) || return;
-   
+
     # Alle oder ausgewählte Datenbanken dieser Gruppe hinzufügen
-    @dbkeys = keys %{$self->{databases}};
+    @dbkeys = keys %{ $self->{databases} };
     foreach my $dbkey (@dbkeys) {
         if ( $dbkey =~ /^$key-/ ) {
             my $dburi = $self->db2uri($dbkey);
@@ -177,21 +189,21 @@ sub prefix2rdf {
 }
 
 sub add_statements {
-    my ($model, $statements) = @_;
+    my ( $model, $statements ) = @_;
 
     $model->begin_bulk_ops;
     foreach (@$statements) {
-        $_->[1] = iri($_->[1]) unless blessed $_->[1];
-        $_->[2] = iri($_->[2]) unless blessed $_->[2];
-        $_ = statement( @$_ ); # if ref $_ eq 'ARRAY';
-        $model->add_statement( $_ );
+        $_->[1] = iri( $_->[1] ) unless blessed $_->[1];
+        $_->[2] = iri( $_->[2] ) unless blessed $_->[2];
+        $_ = statement(@$_);    # if ref $_ eq 'ARRAY';
+        $model->add_statement($_);
     }
     $model->end_bulk_ops;
     return $model;
 }
 
 sub db2rdf {
-    my ($self, $key, $triples) = @_;
+    my ( $self, $key, $triples ) = @_;
 
     my $db = $self->{databases}->{$key};
     my $dburi = $self->db2uri($key) || return;
@@ -204,17 +216,20 @@ sub db2rdf {
     my $url   = $db->{url};
     my $restricted;
 
-    push @$triples, [ $dburi, NS->uri('dcterms:title'), literal($db->{title}, 'de') ]
-        if $db->{title};
+    push @$triples,
+      [ $dburi, NS->uri('dcterms:title'), literal( $db->{title}, 'de' ) ]
+      if $db->{title};
 
-    push @$triples, [ $dburi, NS->uri('dcterms:title'), literal($db->{title_en}, 'en') ]
-        if $db->{title_en};
+    push @$triples,
+      [ $dburi, NS->uri('dcterms:title'), literal( $db->{title_en}, 'en' ) ]
+      if $db->{title_en};
 
     push @$triples, [ $dburi, NS->uri('gbv:dbkey'), literal($key) ];
 
     my $host = $db->{host};
     if ( $host && $dbsid ) {
-        push @$triples, [ $dburi, NS->uri('gbv:srubase'), iri("http://sru.gbv.de/$key") ];
+        push @$triples,
+          [ $dburi, NS->uri('gbv:srubase'), iri("http://sru.gbv.de/$key") ];
 
         my $picabase = "http://$host/DB=$dbsid/";
         push @$triples, [ $dburi, NS->uri('gbv:picabase'), iri($picabase) ];
@@ -222,17 +237,18 @@ sub db2rdf {
         $url ||= $picabase;
     }
 
-    my $csv = $self->{config}{stats}."/$key.csv";
-    if (-f $csv) {
+    my $csv = $self->{config}{stats} . "/$key.csv";
+    if ( -f $csv ) {
         my $count;
         open my $fh, "<", $csv;
-        readline($fh); # header
+        readline($fh);    # header
         while (<$fh>) {
             chomp;
-            my (undef, $tmp) = split ';', $_;
+            my ( undef, $tmp ) = split ';', $_;
             $count = $tmp if $tmp ne '';
         }
         if ( defined $count ) {
+
 #            my $statItem = blank(md5_hex($counturl));
 #            $model->add_statement(statement(
 #                $dburi, NS->uri('void:statItem'), $statItem
@@ -243,110 +259,142 @@ sub db2rdf {
 #            $model->add_statement(statement(
 #                $statItem, NS->uri('rdf:value'), literal($count) # TODO: xs:int
 #            ));
-            push @$triples, [ $dburi, NS->uri('dcterms:extent'), 
-                literal($count, undef, NS->uri('xs:int')) 
-            ];
+            push @$triples,
+              [
+                $dburi,
+                NS->uri('dcterms:extent'),
+                literal( $count, undef, NS->uri('xs:int') )
+              ];
         }
     }
 
     push @$triples, [ $dburi, NS->uri('foaf:homepage'), iri($url) ] if $url;
 
-    if (defined $db->{'restricted'} and not $db->{'restricted'}) {
-        push @$triples, [ $dburi, NS->uri('rdf:type'), NS->uri('daiaserv:Openaccess') ];
+    if ( defined $db->{'restricted'} and not $db->{'restricted'} ) {
+        push @$triples,
+          [ $dburi, NS->uri('rdf:type'), NS->uri('daiaserv:Openaccess') ];
     }
 
     # Spezielle Links je nach Datenbank-Typ
     if ( $key =~ /^opac-([a-zA-Z]+)-(.+)$/ ) {
-        my $org = "http://uri.gbv.de/organization/isil/".uc($1)."-".ucfirst($2);
+        my $org =
+          "http://uri.gbv.de/organization/isil/" . uc($1) . "-" . ucfirst($2);
         push @$triples, [ iri($org), NS->uri('gbv:opac'), $dburi ];
 
-    } elsif ( $key =~ /^fachopac-(.+)$/ ) {
+    }
+    elsif ( $key =~ /^fachopac-(.+)$/ ) {
+
         # TODO: daten der anderen DB auch hinzu
         if ( $self->{databases}->{"fachopacplus-$1"} ) {
-            push @$triples, [ $dburi, NS->uri('rdfs:seeAlso'), $self->db2uri("fachopacplus-$1") ];
+            push @$triples,
+              [
+                $dburi, NS->uri('rdfs:seeAlso'),
+                $self->db2uri("fachopacplus-$1")
+              ];
         }
-    } elsif ( $key =~ /^fachopacplus-(.+)$/ ) {
+    }
+    elsif ( $key =~ /^fachopacplus-(.+)$/ ) {
         if ( $self->{databases}->{"fachopac-$1"} ) {
-            push @$triples, [ $dburi, NS->uri('rdfs:seeAlso'), $self->db2uri("fachopac-$1") ];
+            push @$triples,
+              [ $dburi, NS->uri('rdfs:seeAlso'), $self->db2uri("fachopac-$1") ];
         }
     }
 
-    foreach my $type (qw(
-        daia:Service 
-        http://purl.org/cld/cdtype/CatalogueOrIndex 
+    foreach my $type (
+        qw(
+        daia:Service
+        http://purl.org/cld/cdtype/CatalogueOrIndex
         void:Dataset
         schema:Dataset
         )
-    ) {
-       push @$triples, [ $dburi, NS->uri('rdf:type'), NS->uri($type) ];
+      )
+    {
+        push @$triples, [ $dburi, NS->uri('rdf:type'), NS->uri($type) ];
     }
-    
-    # void:uriRegexPattern "http://uri.gbv.de/record/opac-de-18:ppn:[0-9]+[0-9xX]"  ?
+
+# void:uriRegexPattern "http://uri.gbv.de/record/opac-de-18:ppn:[0-9]+[0-9xX]"  ?
 
     log_debug { "added database $dburi" };
 }
 
 sub isil2db {
-    my ($self, $isil) = @_;
+    my ( $self, $isil ) = @_;
     return unless $self->{databases};
 
     return unless $isil =~ /^[a-z]+-[a-z0-9-]+$/i;
-    my $key = 'opac-'.lc($isil);
+    my $key = 'opac-' . lc($isil);
 
     return $self->{databases}->{$key};
 }
 
 sub load {
     my $self = shift;
-    foreach my $name (qw(databases prefixes)) {
-        $self->load_part($name);
-    }
-}
-
-sub load_part {
-    my ($self, $name) = @_;
 
     # TODO: configure caching directory
     $self->{tempdir} ||= tempdir();
 
-    my $url  = $self->{config}{unapi} . "/$name";
-    my $file = $self->{tempdir}.$name;
-        
-    my $mirror = mirror($url, $file);
+    foreach my $name (qw(databases prefixes)) {
 
-    if ($mirror == RC_NOT_MODIFIED and $self->{$name}) {
-        return;
-    } elsif (is_success($mirror)) {
-        if (open(my $fh, "<:encoding(UTF-8)", $file)) {
-            my $json = try {
-                local $/;
-                JSON->new->decode(<$fh>);
-            };
-            if ($json) {
-                log_debug { "retrieved GBV list of $name" };
-                $self->{$name} = $json;
-                return;
+        my $url  = $self->{config}{unapi} . "/$name";
+        my $file = $self->{tempdir} . "/$name";
+
+        my $mirror = mirror( $url, $file );
+
+        if ( $mirror == RC_NOT_MODIFIED and $self->{$name} ) {
+            return;
+        }
+        elsif ( is_success($mirror) ) {
+            if ( open( my $fh, " < : encoding(UTF-8)", $file ) ) {
+                my $json = try {
+                    local $/;
+                    JSON->new->decode(<$fh>);
+                };
+                if ($json) {
+                    log_debug { " retrieved GBV list of $name" };
+                    $self->{$name} = $json;
+                    next;
+                }
             }
+        }
+
+        log_error { " failed to get GBV list of $name" };
+        $self->{$name} ||= {};
+    }
+
+    if ( -f $self->{config}{kxpdbids} ) {
+        my @lines = grep { $_ } split "\n",
+          do { local ( @ARGV, $/ ) = $self->{config}{kxpdbids}; <> };
+        if (@lines) {
+            $self->{kxpdbids} = { map { ( $_ => 1 ) } @lines };
         }
     }
 
-    log_error { "failed to get GBV list of $name" };
-    $self->{$name} ||= { };
+    foreach my $key ( keys %{ $self->{databases} } ) {
+        my $db = $self->{databases}{$key};
+        if (   $db->{host} eq "gsoapi.gbv.de"
+            && $self->{kxpdbids}{ $db->{dbsid} } )
+        {
+            if ( $db->{url} ) {
+                $db->{url} =~ s/gso\.gbv\.de/kxp.k10plus.de/;
+                $db->{host} = s/gsoapi\.gbv\.de/kxpapi.k10plus.de:8000/;
+            }
+        }
+    }
 }
 
 sub suggest_dbkey {
-    my ($self, $search) = @_;
+    my ( $self, $search ) = @_;
     my $match = quotemeta $search;
 
     $self->load;
-    my ($completion, $description, $uris) = ([],[],[]);
+    my ( $completion, $description, $uris ) = ( [], [], [] );
 
     my @dbkeys;
-    my $i=0;
-    foreach my $key (sort keys %{$self->{databases}}) {
-        if ($key ge $search) {
+    my $i = 0;
+    foreach my $key ( sort keys %{ $self->{databases} } ) {
+        if ( $key ge $search ) {
             push @dbkeys, $key if $key =~ /$match/;
-            last if $i++ > 10;            
+            last if $i++ > 10;
         }
     }
 
@@ -354,9 +402,9 @@ sub suggest_dbkey {
         my $db = $self->{databases}->{$dbkey};
         next if !$db;
 
-        push @$completion, $dbkey;
-        push @$description, encode('utf-8',$db->{title});
-        push @$uris, "http://uri.gbv.de/database/$dbkey";
+        push @$completion,  $dbkey;
+        push @$description, encode( 'utf-8', $db->{title} );
+        push @$uris,        "http://uri.gbv.de/database/$dbkey";
     }
 
     return [ $search, $completion, $description, $uris ];

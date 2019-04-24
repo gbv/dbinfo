@@ -1,3 +1,9 @@
+dbinfo (0.9.0) unstable; urgency=medium
+
+ * add special handling of K10plus databases
+
+ -- Jakob Voß <jakob.voss@gbv.de>  Wed, 24 Apr 2019 08:45:21 +0100
+
 dbinfo (0.8.2) unstable; urgency=medium
 
   * fixed Debian init script
