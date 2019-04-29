@@ -376,7 +376,7 @@ sub load {
         {
             if ( $db->{url} ) {
                 $db->{url} =~ s/gso\.gbv\.de/kxp.k10plus.de/;
-                $db->{host} = s/gsoapi\.gbv\.de/kxpapi.k10plus.de:8000/;
+                $db->{host} =~ s/gsoapi\.gbv\.de/kxpapi.k10plus.de:8000/;
             }
         }
     }
