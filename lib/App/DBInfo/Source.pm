@@ -228,8 +228,12 @@ sub db2rdf {
 
     my $host = $db->{host};
     if ( $host && $dbsid ) {
-        push @$triples,
-          [ $dburi, NS->uri('gbv:srubase'), iri("http://sru.gbv.de/$key") ];
+        my $srubase =
+          $host =~ /kxpapi\.k10plus\.de:8000/
+          ? 'http://sru.k10plus.de/'
+          : 'http://sru.gbv.de/';
+
+        push @$triples, [ $dburi, NS->uri('gbv:srubase'), iri("$srubase$key") ];
 
         my $picabase = "http://$host/DB=$dbsid/";
         push @$triples, [ $dburi, NS->uri('gbv:picabase'), iri($picabase) ];
