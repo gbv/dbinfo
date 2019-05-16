@@ -1,4 +1,0 @@
-@prefix gbv: <http://purl.org/ontology/gbv/> . 
-<http://uri.gbv.de/database/grib> gbv:webcat <http://cws.gbv.de/ws/?dbsid=> .
-<http://uri.gbv.de/database/perlis> gbv:webcat <http://cws.gbv.de/ws/> .
-<http://uri.gbv.de/database/dbbe> gbv:webcat <http://cws.gbv.de/ws/xx> .

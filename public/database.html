@@ -39,11 +39,11 @@
     [% IF dbs.dc_subject %]
        <p>Typ: <a href="$dbs.dc_subject">$dbs.dc_subject.skos_prefLabel</a> </p>
     [% END %]
-    [% IF dbs.gbv_dbkey or dbs.gbv_srubase or dbs.gbv_webcat or dbs.gbv_solrbase or dbs.gbv_oaibase %]
+    [% IF dbs.gbv_dbkey or dbs.gbv_srubase or dbs.gbv_solrbase or dbs.gbv_oaibase %]
      <h2>Schnittstellen</h2>
      <dl>
       [% IF dbs.gbv_dbkey %]
-       <dt class="inline"><a href="http://unapi.gbv.de/about">unAPI</a>-key</dt>
+       <dt class="inline"><a href="https://verbundwiki.gbv.de/display/VZG/unAPI">unAPI</a>-key</dt>
        <dd><code><a href="http://unapi.gbv.de/about">$dbs.gbv_dbkey</a></code></dd>
       [% END %]
       [% IF dbs.gbv_srubase %]
@@ -57,10 +57,6 @@
       [% IF dbs.gbv_oaibase %]
        <dt class="inline">OAI-PMH</dt>
        <dd><code><a href="$dbs.gbv_oaibase">$dbs.gbv_oaibase</a></code></dd>
-      [% END %]
-      [% IF dbs.gbv_webcat %]
-       <dt class="inline">Webcat</dt>
-       <dd><code><a href="$dbs.gbv_webcat">$dbs.gbv_webcat</a></code></dd>
       [% END %]
      </dl>
     [% END %]
