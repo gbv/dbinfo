@@ -43,12 +43,31 @@
      <h2>Schnittstellen</h2>
      <dl>
       [% IF dbs.gbv_dbkey %]
-       <dt class="inline"><a href="https://verbundwiki.gbv.de/display/VZG/unAPI">unAPI</a>-key</dt>
-       <dd><code><a href="http://unapi.gbv.de/about">$dbs.gbv_dbkey</a></code></dd>
+       <dt class="inline">
+         <a href="https://verbundwiki.gbv.de/display/VZG/unAPI">unAPI</a>
+       </dt> 
+       <dd>
+         [% unapiurl="http://unapi.gbv.de/" %]
+         [% IF dbs.gbv_srubase %] 
+         [%  unapiurl = dbs.gbv_srubase | replace("sru","unapi") | replace('[^/]+$','')%]
+         [% END %]
+         [% unapiurl=unapiurl _ "?id=" _ dbs.gbv_dbkey _ ":ppn:PPN&format=pp" %]
+         <code><a href="$unapiurl$">$unapiurl$</a></code>
+         (<code>PPN</code> durch eine PPN ersetzen)
+       </dd>
       [% END %]
       [% IF dbs.gbv_srubase %]
-       <dt class="inline"><abbr title="Search/Retrieval via URL">SRU</abbr></dt>
+       <dt class="inline">
+         <a href="https://verbundwiki.gbv.de/display/VZG/SRU" title="Search/Retrieval via URL">SRU</a></dt>
        <dd><code><a href="$dbs.gbv_srubase">$dbs.gbv_srubase</a></code></dd>
+       <dt class="inline">
+         <a href="https://verbundwiki.gbv.de/display/VZG/Z39.50">Z39.50</a>
+       </dt>
+       <dd>
+         [% z3950 = dbs.gbv_srubase | replace("sru","z39.50") | replace("http://","") %]
+         <code>$z3950$</code> (TCP)
+         
+       </dd>
       [% END %]
       [% IF dbs.gbv_solrbase %]
        <dt class="inline">Solr</dt>
