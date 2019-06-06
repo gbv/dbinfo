@@ -20,12 +20,6 @@
         </form>
         <a href="[% dbs.foaf_homepage.href %]XML=1.0/IKTLIST">IKT-Liste</a>
       [% END %]
-      [% IF dbs.type('daiaserv:Openaccess') -%]
-        <img src="$base/img/openaccess10x16.png" title="Frei zugänglich" />
-      [%- ELSE -%]
-        <img src="$base/img/closedaccess10x16.png" title="Zugangsbeschränkung möglich" />
-        <em>Zugangsbeschränkung möglich</em>
-      [%- END %]
     </p>
     [% IF dbs.foaf_isPrimaryTopicOf %]
         <p><a href="$dbs.foaf_isPrimaryTopicOf.href">Weitere Informationen zur Datenbank</a></p>

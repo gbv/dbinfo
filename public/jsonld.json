@@ -50,12 +50,6 @@
         IF dbs.gbv_picabase; data.picabase = dbs.gbv_picabase.str; END;
         IF dbs.gbv_srubase; data.srubase = dbs.gbv_srubase.str; END;
 
-        IF dbs.type('daiaserv:Openaccess');
-            data.openaccess = JSON_TRUE;
-        ELSE;
-            data.openaccess = JSON_FALSE;
-        END;
-
         SET org = dbs.rev('gbv:opac');
         IF org; data.opacOf = org.str; END;
 

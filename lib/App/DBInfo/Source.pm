@@ -274,11 +274,6 @@ sub db2rdf {
 
     push @$triples, [ $dburi, NS->uri('foaf:homepage'), iri($url) ] if $url;
 
-    if ( defined $db->{'restricted'} and not $db->{'restricted'} ) {
-        push @$triples,
-          [ $dburi, NS->uri('rdf:type'), NS->uri('daiaserv:Openaccess') ];
-    }
-
     # Spezielle Links je nach Datenbank-Typ
     if ( $key =~ /^opac-([a-zA-Z]+)-(.+)$/ ) {
         my $org =
