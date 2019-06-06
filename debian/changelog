@@ -1,3 +1,10 @@
+dbinfo (0.9.3) unstable; urgency=medium
+
+  * extend information about APIs
+  * remove information about open/closed access
+
+ -- Jakob Voß <jakob.voss@gbv.de>  Thu, 6 Jun 2019 09:08:25 +0200
+
 dbinfo (0.9.2) unstable; urgency=medium
 
   * adjust SRU and IKT URLs for kxp databases
