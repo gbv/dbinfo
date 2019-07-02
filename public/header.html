@@ -4,24 +4,15 @@
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
   <title>$title</title>
   <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/easy-autocomplete/1.3.5/easy-autocomplete.min.css" integrity="sha256-fARYVJfhP7LIqNnfUtpnbujW34NsfC4OJbtc37rK2rs=" crossorigin="anonymous" />
   <link href="$base/dbinfo.css" rel="stylesheet" />
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
-  <script type="text/javascript" src="$base/js/ng-suggest.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="$base/js/autocomplete.js"></script>
+  <script type="text/javascript">var BASE = "$base"</script>
   <script type="text/javascript" src="$base/js/dbinfo.js"></script>
-  <script type="text/javascript">
-dbinfoApp.controller('myController', ['\$scope', '\$window', function(\$scope, \$window) {
-    \$scope.suggest_dbkey = "[% base %]/api/dbkey?id={searchTerms}"; 
-    \$scope.search_dbkey = "[% uri.gbv_dbkey %]";
-    \$scope.select_dbkey = function() {
-        var url = "$base/"+\$scope.search_dbkey;
-        console.log(url);
-        \$window.location.href=url;
-    }
-}]);
-  </script>
  </head>
- <body ng-controller="myController">
+ <body>
   <nav class="navbar navbar-inverse navbar-static-top">
     <div class="container-fluid">
       <div class="navbar-header">
@@ -31,10 +22,9 @@ dbinfoApp.controller('myController', ['\$scope', '\$window', function(\$scope, \
         <a class="navbar-brand" href="$base/">Datenbankverzeichnis</a>
       </div>
     </div>
-    <form class="navbar-form navbar-right" ng-submit="select_dbkey()">
+    <form class="navbar-form navbar-right" id="suggest-form">
       <div class="form-group">
-        <input class="form-control" type="text" 
-               suggest-typeahead="suggest_dbkey" jsonp=1 ng-model="search_dbkey"/>
+        <input class="form-control" type="text" id="suggest-dbkey"/>
        </div>
        <button type="submit" class="btn btn-default">dbkey</input>
     </form>

@@ -10,6 +10,9 @@
   line-height: 64px;
   font-size: 30px;
 }
+.eac-item {
+  color: #000;  
+}
 .error {
   padding: 5px 0px;
   color: red;
