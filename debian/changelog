@@ -1,3 +1,11 @@
+dbinfo (0.9.4) unstable; urgency=medium
+
+  * sort databases by key
+  * fix kxp URLs (again)
+  * replace AngularJS with jQuery
+
+ -- Jakob Voß <jakob.voss@gbv.de>  Tue, 2 Jul 2019 13:25:25 +0200
+
 dbinfo (0.9.3) unstable; urgency=medium
 
   * extend information about APIs
