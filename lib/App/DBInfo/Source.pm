@@ -229,7 +229,7 @@ sub db2rdf {
     my $host = $db->{host};
     if ( $host && $dbsid ) {
         my $srubase =
-          $host =~ /kxpapi\.k10plus\.de:8000/
+          $host =~ /kxp\.k10plus\.de/
           ? 'http://sru.k10plus.de/'
           : 'http://sru.gbv.de/';
 
@@ -361,21 +361,23 @@ sub load {
     }
 
     if ( -f $self->{config}{kxpdbids} ) {
+        log_info { "Loading KXP DB ids from " . $self->{config}{kxpdbids} };
         my @lines = grep { $_ } split "\n",
           do { local ( @ARGV, $/ ) = $self->{config}{kxpdbids}; <> };
         if (@lines) {
             $self->{kxpdbids} = { map { ( $_ => 1 ) } @lines };
+            log_info { "Got " . scalar @lines . " ids" };
         }
     }
 
     foreach my $key ( keys %{ $self->{databases} } ) {
         my $db = $self->{databases}{$key};
-        if (   $db->{host} eq "gsoapi.gbv.de"
+        if (   $db->{host} =~ /gsoapi\.gbv\.de/
             && $self->{kxpdbids}{ $db->{dbsid} } )
         {
             if ( $db->{url} ) {
                 $db->{url} =~ s/gso\.gbv\.de/kxp.k10plus.de/;
-                $db->{host} =~ s/gsoapi\.gbv\.de/kxpapi.k10plus.de:8000/;
+                $db->{host} =~ s/gsoapi\.gbv\.de(:\d+)?/kxp.k10plus.de/;
             }
         }
     }
