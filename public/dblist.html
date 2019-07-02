@@ -6,7 +6,7 @@
   </tr>
 </thead>
 <tbody>
-[% FOREACH db = dblist %]
+[% FOREACH db = dblist.sort %]
 <tr>
   <td>
     <a href="$base/[% db.gbv_dbkey %]">$db.gbv_dbkey</a>
