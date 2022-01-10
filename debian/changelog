@@ -1,3 +1,8 @@
+dbinfo (0.9.5) unstable; urgency=medium
+  * fix IKT-Link with /
+
+ -- Jakob Voß <jakob.voss@gbv.de>  Mon, 10 Jan 2022 09:28:24 +0200
+
 dbinfo (0.9.4) unstable; urgency=medium
 
   * sort databases by key

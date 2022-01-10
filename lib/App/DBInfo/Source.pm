@@ -157,13 +157,13 @@ sub prefixonly2rdf {
     my ( $self, $key, $triples ) = @_;
     my $prefix = $self->{prefixes}->{$key} || return;
 
-    my $uri = "http://uri.gbv.de/database/$key";
+    my $uri   = "http://uri.gbv.de/database/$key";
     my $title = $prefix->{title} || 'unnamed database type';
 
     log_debug { "database prefix found for $key: $title" };
 
     push @$triples,
-      [ iri($uri), NS->uri('rdf:type'), NS->uri('skos:Concept') ],
+      [ iri($uri), NS->uri('rdf:type'),       NS->uri('skos:Concept') ],
       [ iri($uri), NS->uri('skos:prefLabel'), literal( $title, 'de' ) ];
 
     # TODO: English title
@@ -205,7 +205,7 @@ sub add_statements {
 sub db2rdf {
     my ( $self, $key, $triples ) = @_;
 
-    my $db = $self->{databases}->{$key};
+    my $db    = $self->{databases}->{$key};
     my $dburi = $self->db2uri($key) || return;
 
     log_debug { "database found for $key" };
@@ -272,6 +272,7 @@ sub db2rdf {
         }
     }
 
+    $url .= '/' if $url !~ qr{/$};
     push @$triples, [ $dburi, NS->uri('foaf:homepage'), iri($url) ] if $url;
 
     # Spezielle Links je nach Datenbank-Typ
@@ -376,7 +377,7 @@ sub load {
             && $self->{kxpdbids}{ $db->{dbsid} } )
         {
             if ( $db->{url} ) {
-                $db->{url} =~ s/gso\.gbv\.de/kxp.k10plus.de/;
+                $db->{url}  =~ s/gso\.gbv\.de/kxp.k10plus.de/;
                 $db->{host} =~ s/gsoapi\.gbv\.de(:\d+)?/kxp.k10plus.de/;
             }
         }
