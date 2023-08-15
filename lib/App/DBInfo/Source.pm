@@ -12,12 +12,12 @@ use RDF::Trine::Model;
 use RDF::Trine qw(iri statement literal blank);
 
 use LWP::Simple qw(mirror is_success RC_NOT_MODIFIED);
-use File::Temp qw(tempfile tempdir);
+use File::Temp  qw(tempfile tempdir);
 use Encode;
 use JSON;
-use Digest::MD5 qw(md5_hex);
+use Digest::MD5  qw(md5_hex);
 use Scalar::Util qw(blessed);
-use List::Util qw(first);
+use List::Util   qw(first);
 use YAML;
 
 use CHI;
@@ -195,7 +195,7 @@ sub add_statements {
     foreach (@$statements) {
         $_->[1] = iri( $_->[1] ) unless blessed $_->[1];
         $_->[2] = iri( $_->[2] ) unless blessed $_->[2];
-        $_ = statement(@$_);    # if ref $_ eq 'ARRAY';
+        $_      = statement(@$_);    # if ref $_ eq 'ARRAY';
         $model->add_statement($_);
     }
     $model->end_bulk_ops;
@@ -228,11 +228,7 @@ sub db2rdf {
 
     my $host = $db->{host};
     if ( $host && $dbsid ) {
-        my $srubase =
-          $host =~ /kxp\.k10plus\.de/
-          ? 'http://sru.k10plus.de/'
-          : 'http://sru.gbv.de/';
-
+        my $srubase = 'http://sru.k10plus.de/';
         push @$triples, [ $dburi, NS->uri('gbv:srubase'), iri("$srubase$key") ];
 
         my $picabase = "http://$host/DB=$dbsid/";

@@ -1,5 +1,5 @@
 ---
-unapi: "http://gsoapiwww.gbv.de/unapi"
+unapi: "https://kxpapiwww.k10plus.de/unapi"
 kxpdbids: /etc/dbinfo/kxpdbids
 proxy:
     - 127.0.0.1

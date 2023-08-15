@@ -12,8 +12,8 @@ test_psgi $app, sub {
     my $res = $cb->(GET "/");
     is $res->code, '200', 'base';
 
-    $res = $cb->(GET "/gvk");
-    is $res->code, '200', 'gvk found';
+    $res = $cb->(GET "/opac-de-627");
+    is $res->code, '200', 'opac-de-627 found';
 
     foreach my $format (qw(ttl rdfxml dbinfo ld json)) {
         $res = $cb->(GET "/opac-de-ilm1?format=$format");

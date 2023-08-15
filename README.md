@@ -33,7 +33,7 @@ followed by a database key (**dbkey**). Each dbkey consists of lowercase
 letters (`a-z`), digits (`0-9`), and/or minus (`-`). The part before the first
 minus, if given, identifies a database group. For instance:
 
-* <http://uri.gbv.de/database/gvk>: dbkey `gvk`
+* <http://uri.gbv.de/database/vd17>: dbkey `vd17`
 * <http://uri.gbv.de/database/opac>: database group `opac`
 * <http://uri.gbv.de/database/opac-de-hil2>: database `opac-de-hil2` 
   in group `opac`
