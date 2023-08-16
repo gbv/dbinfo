@@ -28,7 +28,6 @@ ifeq ($(PANDOC),)
 endif
 
 docs: README.md manpage
-	cd doc; make dbinfo.pdf
 
 manpage: debian/$(PACKAGE).1
 debian/$(PACKAGE).1: README.md $(CONTROL)
@@ -48,7 +47,7 @@ package: manpage version tests
 # install required toolchain and Debian packages
 dependencies:
 	apt-get -y install fakeroot dpkg-dev debhelper
-	apt-get -y install pandoc libghc-citeproc-hs-data 
+	apt-get -y install pandoc 
 	apt-get -y install $(DEPENDS)
 
 # install required Perl packages

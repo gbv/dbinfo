@@ -33,9 +33,9 @@ use Plack::Middleware::Negotiate;
 use Encode qw(encode);
 
 use List::Util qw(first);
-use YAML ();
+use YAML       ();
 
-our $VERSION="0.9.5";
+our $VERSION="0.9.6";
 
 my $NEGOTIATE = Plack::Middleware::Negotiate->new(
     parameter => 'format',

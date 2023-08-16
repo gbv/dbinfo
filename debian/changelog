@@ -1,3 +1,8 @@
+dbinfo (0.9.6) unstable; urgency=medium
+  * fully migrate from gbv.de to k10plus.de
+
+ -- Jakob Voß <jakob.voss@gbv.de>  Wed, 16 Aug 2023 15:48:24 +0200
+
 dbinfo (0.9.5) unstable; urgency=medium
   * fix IKT-Link with /
 
