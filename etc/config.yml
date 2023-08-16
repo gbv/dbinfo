@@ -1,6 +1,5 @@
 ---
 unapi: "https://kxpapiwww.k10plus.de/unapi"
-kxpdbids: /etc/dbinfo/kxpdbids
 proxy:
     - 127.0.0.1
     - 193.174.240.0/24
