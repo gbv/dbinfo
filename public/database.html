@@ -19,6 +19,9 @@
           <input type="submit" value="Search">
         </form>
         <a href="[% dbs.foaf_homepage.href %]XML=1.0/IKTLIST">IKT-Liste</a>
+        [% IF dbs.uri == "http://uri.gbv.de/database/opac-de-627" %]
+         (bzw. <a href="https://kxp.k10plus.de/DB=2.0/XML=1.0/IKTLIST">IKT-Liste für SRU</a>)
+        [% END %]
       [% END %]
     </p>
     [% IF dbs.foaf_isPrimaryTopicOf %]
